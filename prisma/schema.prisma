@@ -1,0 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Track {
+  id           Int      @id @default(autoincrement())
+  originalName String
+  filename     String   @unique
+  mimetype     String
+  size         Int
+  createdAt    DateTime @default(now())
+}
