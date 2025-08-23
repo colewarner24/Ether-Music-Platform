@@ -10,8 +10,12 @@ datasource db {
 model Track {
   id           Int      @id @default(autoincrement())
   originalName String
-  filename     String   @unique
+  filename     String   @unique           // audio file
   mimetype     String
   size         Int
   createdAt    DateTime @default(now())
+  title        String
+  artist       String
+  artworkFile  String?  // stored in public/artworks/<file>, nullable
 }
+

@@ -22,35 +22,68 @@ export default async function handler(req, res) {
   if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
 
   try {
-    const options = { uploadDir: tmpDir, keepExtensions: true };
-    const { files } = await parseForm(req, options);
+    const { fields, files } = await parseForm(req, {
+      uploadDir: tmpDir,
+      keepExtensions: true,
+      maxFileSize: 50 * 1024 * 1024, // 50MB per file (adjust)
+      multiples: true
+    });
 
-    // formidable sometimes gives an array if multiple files
-    let file = files.file;
-    if (Array.isArray(file)) file = file[0];
-    if (!file || !file.filepath) return res.status(400).json({ error: "no_file" });
+    // fields
+    const title = (fields.title && String(Array.isArray(fields.title) ? fields.title[0] : fields.title).trim()) || "Untitled";
+    const artist = (fields.artist && String(Array.isArray(fields.artist) ? fields.artist[0] : fields.artist).trim()) || "Unknown";
 
+    // required audio file (field name: "file")
+    let audio = files.file;
+    if (Array.isArray(audio)) audio = audio[0];
+    if (!audio || !audio.filepath) return res.status(400).json({ error: "no_audio_file" });
+
+    // optional artwork (field name: "artwork")
+    let artwork = files.artwork;
+    if (Array.isArray(artwork)) artwork = artwork[0];
+
+    // prepare dest dirs
     const uploadsDir = path.join(process.cwd(), "public", "uploads");
+    const artDir = path.join(process.cwd(), "public", "artworks");
     if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+    if (!fs.existsSync(artDir)) fs.mkdirSync(artDir, { recursive: true });
 
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalFilename || file.newFilename) || "";
-    const filename = unique + ext;
-    const dest = path.join(uploadsDir, filename);
-
+    // move audio
+    const uniqueAudio = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const audioExt = path.extname(audio.originalFilename || audio.newFilename) || "";
+    const audioFilename = uniqueAudio + audioExt;
+    const audioDest = path.join(uploadsDir, audioFilename);
     try {
-      await fs.promises.rename(file.filepath, dest);
-    } catch (e) {
-      await fs.promises.copyFile(file.filepath, dest);
-      await fs.promises.unlink(file.filepath);
+      await fs.promises.rename(audio.filepath, audioDest);
+    } catch {
+      await fs.promises.copyFile(audio.filepath, audioDest);
+      await fs.promises.unlink(audio.filepath);
+    }
+
+    // move artwork if present
+    let artworkFilename = null;
+    if (artwork && artwork.filepath) {
+      const uniqueArt = Date.now() + "-" + Math.round(Math.random() * 1e9);
+      const artExt = path.extname(artwork.originalFilename || artwork.newFilename) || "";
+      artworkFilename = uniqueArt + artExt;
+      const artDest = path.join(artDir, artworkFilename);
+      try {
+        await fs.promises.rename(artwork.filepath, artDest);
+      } catch {
+        await fs.promises.copyFile(artwork.filepath, artDest);
+        await fs.promises.unlink(artwork.filepath);
+      }
     }
 
     const track = await prisma.track.create({
       data: {
-        originalName: file.originalFilename || "unknown",
-        filename,
-        mimetype: file.mimetype || "application/octet-stream",
-        size: file.size || 0
+        originalName: audio.originalFilename || "unknown",
+        filename: audioFilename,
+        mimetype: audio.mimetype || "application/octet-stream",
+        size: audio.size || 0,
+        title,
+        artist,
+        artworkFile: artworkFilename
       }
     });
 

@@ -5,7 +5,10 @@ CREATE TABLE "Track" (
     "filename" TEXT NOT NULL,
     "mimetype" TEXT NOT NULL,
     "size" INTEGER NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "title" TEXT NOT NULL,
+    "artist" TEXT NOT NULL,
+    "artworkFile" TEXT
 );
 
 -- CreateIndex

@@ -2,5 +2,6 @@ node_modules
 .next
 /prisma/dev.db
 /public/uploads
+/public/artworks
 /tmp
 .env
