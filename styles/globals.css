@@ -1,0 +1,138 @@
+@font-face {
+  font-family: "Trubec";
+  src: url("/fonts/trubec.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "TrubecItalic";
+  src: url("/fonts/Trebuchet-MS-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --ui-font: "Trubec", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html, body, #__next {
+  height: 100%;
+  background-color: #15141A;
+}
+
+body {
+  background-color: #5a5a5a;   /* your choice */
+  color: #fff;              /* optional: make text readable on black */
+  font-family: var(--ui-font);
+}
+
+#container {
+  width: 800px; /* adjust width to taste */
+  margin: 20px auto; /* centers horizontally */
+  background-color: black;
+  border: 1px solid #1a74ff;
+  border-radius: 7px;
+  padding: 10px;
+  font-family: "Trubec";
+}
+
+#header {
+  background: center / cover url("/images/headerchouchou.png");
+  background-position: top;
+  background-repeat: no-repeat;
+  height: auto;
+  align-content: center;
+  margin-bottom: 5px;
+  padding: 10px;
+  position: relative;
+  border: 1px solid #1a74ff;
+  border-radius: 7px 7px 0px 0px;
+  text-align: center;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px black;
+}
+
+.page-title {
+  text-align: left;
+  margin-left: 20px;
+}
+
+.page-description {
+  text-align: right;
+  margin-left: 20px;
+}
+
+#tracks {
+  text-align: center;
+}
+
+#container, #header, #footer {
+  border: 1px solid #1a74ff;
+}
+
+#nav, .drop-content {
+  background: linear-gradient(0deg, #000000 1%, #ffffff 49%, #d5f0ff 51%, #000000 90%);
+}
+
+#nav {
+  display: flex;
+  gap: 5px;
+  justify-content: space-evenly;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  padding: 8px;
+  margin-bottom: 5px;
+  border: 1px solid #1a74ff;
+}
+
+.navbutton {
+  padding: 6px 12px;
+  border: 1px solid #1a74ff;
+  background: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  color: #005aff;
+}
+
+.navbutton:hover {
+  background: #63c4ff;
+  color: white;
+}
+
+.drop {
+  position: relative;
+  display: inline-block;
+}
+
+.drop-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  border: 1px solid #1a74ff;
+  z-index: 999;
+  flex-direction: column;
+}
+
+.drop-content a {
+  display: block;
+  padding: 6px 10px;
+  text-decoration: none;
+  color: #005aff;
+}
+
+.drop-content a:hover {
+  background: #63c4ff;
+  color: white;
+}
+
+.drop:hover .drop-content {
+  display: block;
+}
