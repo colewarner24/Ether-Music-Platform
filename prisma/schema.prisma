@@ -7,15 +7,27 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model Track {
+model User {
   id           Int      @id @default(autoincrement())
-  originalName String
-  filename     String   @unique           // audio file
-  mimetype     String
-  size         Int
+  email        String   @unique
+  passwordHash String
+  artistName   String
+  profilePhoto String?   // optional
+  tracks       Track[]
   createdAt    DateTime @default(now())
-  title        String
-  artist       String
-  artworkFile  String?  // stored in public/artworks/<file>, nullable
 }
+
+model Track {
+  id        Int      @id @default(autoincrement())
+  title     String
+  filename  String
+  mimetype  String
+  size      Int
+  artist    String
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
 

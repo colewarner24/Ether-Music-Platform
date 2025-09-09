@@ -11,8 +11,12 @@
   },
   "dependencies": {
     "@prisma/client": "^5.16.1",
+    "bcrypt": "^6.0.0",
     "formidable": "^3.5.4",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
     "next": "15.4.6",
+    "next-connect": "^1.0.0",
     "react": "19.1.1",
     "react-dom": "19.1.1"
   },
