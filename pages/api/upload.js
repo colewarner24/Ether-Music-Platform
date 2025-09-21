@@ -48,7 +48,7 @@ export default async function handler(req, res) {
           mimetype: audio.mimetype || "application/octet-stream",
           size: audio.size || 0,
           title: title || audio.originalFilename || "Untitled",
-          artist: user.artistName, // optional: store artist name from JWT
+          // artist: user.artistName, // optional: store artist name from JWT
           imageUrl: artworkFilename,
           userId: userId, // 👈 link track to the signed-in user
         },

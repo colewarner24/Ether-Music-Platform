@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
+import Dropzone from 'react-dropzone'
 
 export default function UploadPage() {
   const router = useRouter();
@@ -57,14 +58,27 @@ export default function UploadPage() {
         <div>
           <strong>Artist: </strong>{artist}
         </div>
-        <label>
+        {/* <label>
           <div>Audio file</div>
           <input
             type="file"
             accept="audio/*"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
           />
-        </label>
+        </label> */}
+        <Dropzone onDrop={acceptedFiles => {
+          setFile(acceptedFiles[0]); // support single file only
+        }}>
+          {({getRootProps, getInputProps}) => (
+            <section>
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                <p>Drag 'n' drop some files here, or click to select files</p>
+                {file && <div>Selected file: {file.name}</div>}
+              </div>
+            </section>
+          )}
+        </Dropzone>
         <label>
           <div>Artwork (optional)</div>
           <input

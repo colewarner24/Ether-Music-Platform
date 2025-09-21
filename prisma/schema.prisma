@@ -23,7 +23,6 @@ model Track {
   filename  String
   mimetype  String
   size      Int
-  artist    String
   imageUrl  String?
   createdAt DateTime @default(now())
   userId    Int
