@@ -1,0 +1,63 @@
+
+#nav, .drop-content {
+  background: linear-gradient(0deg, #000000 1%, #ffffff 49%, #d5f0ff 51%, #000000 90%);
+}
+
+.nav {
+  display: flex;
+  gap: 5px;
+  justify-content: space-evenly;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.2px;
+  padding: 8px;
+  margin-bottom: 5px;
+  border: 1px solid #1a74ff;
+}
+
+.navbutton {
+  padding: 6px 12px;
+  border: 1px solid #1a74ff;
+  background: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  color: #005aff;
+}
+
+.navbutton:hover {
+  background: #63c4ff;
+  color: white;
+}
+
+.drop {
+  position: relative;
+  display: inline-block;
+}
+
+.drop-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  border: 1px solid #1a74ff;
+  z-index: 999;
+  flex-direction: column;
+}
+
+.drop-content a {
+  display: block;
+  padding: 6px 10px;
+  text-decoration: none;
+  color: #005aff;
+}
+
+.drop-content a:hover {
+  background: #63c4ff;
+  color: white;
+}
+
+.drop:hover .drop-content {
+  display: block;
+}

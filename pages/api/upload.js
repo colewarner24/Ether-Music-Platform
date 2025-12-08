@@ -2,7 +2,7 @@ import prisma from "../../lib/prisma";
 import formidable from "formidable";
 import fs from "fs";
 import path from "path";
-import jwt from "jsonwebtoken";
+import {decodeToken} from "./utils";
 
 export const config = {
   api: {
@@ -15,22 +15,24 @@ export default async function handler(req, res) {
 
   try {
     // 1. Verify the JWT from cookies or headers
-    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
-    if (!token) return res.status(401).json({ error: "Not authenticated" });
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded.userId;
-    if (!userId) return res.status(401).json({ error: "Invalid token" });
-
+    let userId;
+    try {
+      userId = decodeToken(req);
+    }
+    catch (err) {
+      console.log("Token decode error:", err);
+      return res.status(401).json({ error: err.message });
+    }
     // 2. Parse the form
     const form = formidable({ multiples: true, uploadDir: "./public/uploads", keepExtensions: true });
 
     form.parse(req, async (err, fields, files) => {
       if (err) return res.status(500).json({ error: "Error parsing form" });
 
-      console.log("Parsed fields:", fields);
       let title = fields.title;
       if (Array.isArray(title)) title = title[0];
+      let visibility = fields.visibility;
+      if (Array.isArray(visibility)) visibility = visibility[0];
       const audio = files.file?.[0];
       const artwork = files.artwork?.[0];
 
@@ -38,8 +40,6 @@ export default async function handler(req, res) {
 
       const audioFilename = path.basename(audio.filepath);
       const artworkFilename = artwork ? path.basename(artwork.filepath) : null;
-
-      console.log("artist name from token:", decoded.artistName);
 
       // 3. Create track with reference to userId
       const track = await prisma.track.create({
@@ -51,6 +51,7 @@ export default async function handler(req, res) {
           // artist: user.artistName, // optional: store artist name from JWT
           imageUrl: artworkFilename,
           userId: userId, // 👈 link track to the signed-in user
+          private: visibility === "private",
         },
       });
 

@@ -1,0 +1,73 @@
+
+.header {
+  background: center / cover url("/images/headerchouchou.png");
+  background-position: top;
+  background-repeat: no-repeat;
+  height: auto;
+  align-content: center;
+  margin-bottom: 5px;
+  padding: 10px;
+  position: relative;
+  border: 1px solid #1a74ff;
+  border-radius: 7px 7px 0px 0px;
+  /* text-align: center; */
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px black;
+}
+
+.icon-section {
+  position: absolute;
+  right: 0px;
+  top: 10px;
+}
+
+.auth-links {
+  display: flex;
+  gap: 1rem; /* space between links */
+}
+
+.auth-link {
+  margin-top: 9px;
+  text-decoration: none;
+  color: #1a202c; /* dark text */
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.auth-link:hover {
+  color: #3b82f6; /* changes color on hover */
+}
+
+
+.profile-icon {
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.pageTitle {
+  position: absolute;
+  /* text-align: left; */
+  margin-left: 20px;
+  margin-top: 0px;
+  text-decoration: none;
+  position: absolute;
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.page-title:hover {
+  color: #3b82f6; /* changes color on hover */
+}
+
+.pageDescription {
+  text-align: right;
+  margin-left: 20px;
+  margin-top: 90px;
+}

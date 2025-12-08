@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import UserMenu from "./UserMenu";
+import styles from "../styles/Header.module.css";
 
 export default function Header() {
 
@@ -25,8 +27,10 @@ export default function Header() {
 
 
   return (
-    <div id="header">
-      <div className="icon-section">
+    console.log(styles.header),
+    <div className={styles.header} id="header">
+      <UserMenu user={user} setUser={setUser} />
+      {/* <div className="icon-section">
         {user ? (
           <Link href={`/user/${user.artistName}`}>
             <Image
@@ -54,9 +58,9 @@ export default function Header() {
             </Link>
           </div>
         )}
-      </div>
-      <Link href="/" className="page-title">the ether</Link>
-      <p className = "page-description">a music platform</p>
+      </div> */}
+      <Link href="/" className={styles.pageTitle}>the ether</Link>
+      <p className={styles.pageDescription}>a music platform</p>
       {/* <p>music from the beyond</p> */}
     </div>
   );

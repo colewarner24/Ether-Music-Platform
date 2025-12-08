@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export default function TrackCard({ title, artist, artwork, src }) {
+  console.log('Rendering TrackCard:', { title, artist, artwork, src });
   const audioRef = useRef(null);
   const canvasRef = useRef(null);
   const [playing, setPlaying] = useState(false);

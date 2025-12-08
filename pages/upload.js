@@ -7,17 +7,17 @@ export default function UploadPage() {
   const [file, setFile] = useState(null);
   const [artwork, setArtwork] = useState(null);
   const [title, setTitle] = useState("");
-  const [artist, setArtist] = useState("");
+  //const [artist, setArtist] = useState("");
   const [loading, setLoading] = useState(false);
+  const [visibility, setVisibility] = useState("public");
 
   useEffect(() => {
     // Example: pull from localStorage (or cookie/JWT)
-    const user = localStorage.getItem("token");
-    if (!user) {
+    const token = localStorage.getItem("token");
+    
+    if (!token) {
       router.push("/login"); // redirect if not signed in
-    } else {
-      setArtist(user.artistName); // force artist name
-    }
+    } 
   }, [router]);
 
   async function onSubmit(e) {
@@ -28,7 +28,7 @@ export default function UploadPage() {
     form.append("file", file);
     if (artwork) form.append("artwork", artwork);
     form.append("title", title);
-    form.append("artist", artist);
+    form.append("visibility", visibility);
     try {
       const r = await fetch("/api/upload", {
         method: "POST",
@@ -55,9 +55,6 @@ export default function UploadPage() {
           <div>Track title</div>
           <input value={title} onChange={(e) => setTitle(e.target.value)} />
         </label>
-        <div>
-          <strong>Artist: </strong>{artist}
-        </div>
         {/* <label>
           <div>Audio file</div>
           <input
@@ -86,6 +83,15 @@ export default function UploadPage() {
             accept="image/*"
             onChange={(e) => setArtwork(e.target.files?.[0] || null)}
           />
+        </label>
+        <label>
+          <div>
+            Visibility
+          </div>
+          <select name="visibility" id="visibility" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
         </label>
         <button disabled={loading || !file} style={{ padding: "10px 14px" }}>
           {loading ? "Uploading..." : "Upload"}
