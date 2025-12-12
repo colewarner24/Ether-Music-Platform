@@ -1,24 +1,56 @@
-// components/TrackCard.jsx
 import { useEffect, useRef, useState } from "react";
 
-export default function TrackCard({ title, artist, artwork, src }) {
-  console.log('Rendering TrackCard:', { title, artist, artwork, src });
+export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) {
+  const [src, setSrc] = useState(null);
+
   const audioRef = useRef(null);
   const canvasRef = useRef(null);
+
   const [playing, setPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [peaks, setPeaks] = useState(null);
 
+  // ============================================================
+  //  GET AUDIO SRC: Local uses direct URL, Prod uses signed URL
+  // ============================================================
+  useEffect(() => {
+    async function loadSrc() {
+      if (process.env.ENVIRONMENT === "local") {
+        setSrc(localSrc);
+        return;
+      }
+
+      if (!srcKey) return;
+
+      try {
+        const res = await fetch(`/api/audio-url?key=${encodeURIComponent(srcKey)}`);
+        const data = await res.json();
+        console.log("Fetched signed URL:", data.signedUrl);
+        setSrc(data.signedUrl);
+      } catch (err) {
+        console.error("Failed to fetch signed URL:", err);
+      }
+    }
+
+    loadSrc();
+  }, [srcKey, localSrc]);
+
+  // ============================================================
+  //  AUDIO EVENTS
+  // ============================================================
   useEffect(() => {
     const a = audioRef.current;
     if (!a) return;
+
     const onTime = () => setCurrentTime(a.currentTime || 0);
     const onLoaded = () => setDuration(a.duration || 0);
     const onEnd = () => setPlaying(false);
+
     a.addEventListener("timeupdate", onTime);
     a.addEventListener("loadedmetadata", onLoaded);
     a.addEventListener("ended", onEnd);
+
     return () => {
       a.removeEventListener("timeupdate", onTime);
       a.removeEventListener("loadedmetadata", onLoaded);
@@ -26,19 +58,26 @@ export default function TrackCard({ title, artist, artwork, src }) {
     };
   }, []);
 
+  // ============================================================
+  //  WAVEFORM GENERATION (requires CORS-safe URL)
+  // ============================================================
   useEffect(() => {
-    // try to generate peaks for waveform (may fail cross-origin)
     let cancelled = false;
+
     async function genPeaks() {
       if (!src) return;
+
       try {
         const res = await fetch(src);
         const buf = await res.arrayBuffer();
+
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const audioBuf = await ctx.decodeAudioData(buf);
+
         const ch = audioBuf.getChannelData(0);
         const bars = 160;
         const block = Math.floor(ch.length / bars);
+
         const out = new Array(bars).fill(0).map((_, i) => {
           let peak = 0;
           const start = i * block;
@@ -49,32 +88,43 @@ export default function TrackCard({ title, artist, artwork, src }) {
           }
           return peak;
         });
+
         if (!cancelled) setPeaks(out);
+
         ctx.close();
-      } catch (e) {
+      } catch (err) {
         setPeaks(null);
       }
     }
+
     genPeaks();
     return () => { cancelled = true; };
   }, [src]);
 
+  // ============================================================
+  //  DRAW WAVEFORM
+  // ============================================================
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
     const ctx = canvas.getContext("2d");
     const DPR = window.devicePixelRatio || 1;
+
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
+
     canvas.width = Math.floor(w * DPR);
     canvas.height = Math.floor(h * DPR);
     ctx.scale(DPR, DPR);
+
     ctx.clearRect(0, 0, w, h);
 
     const total = peaks?.length || 160;
     const gap = 2;
     const barW = Math.max(1, Math.floor((w - (total - 1) * gap) / total));
-    const progress = duration ? (currentTime / duration) : 0;
+
+    const progress = duration ? currentTime / duration : 0;
     const played = Math.floor(progress * total);
 
     for (let i = 0; i < total; i++) {
@@ -82,15 +132,26 @@ export default function TrackCard({ title, artist, artwork, src }) {
       const bh = Math.max(2, Math.floor(amp * (h - 4)));
       const x = i * (barW + gap);
       const y = Math.floor((h - bh) / 2);
+
       ctx.fillStyle = i <= played ? "#ffffff" : "rgba(255,255,255,0.45)";
       ctx.fillRect(x, y, barW, bh);
     }
   }, [peaks, currentTime, duration]);
 
+  // ============================================================
+  //  PLAY / PAUSE
+  // ============================================================
   const toggle = () => {
     const a = audioRef.current;
     if (!a) return;
-    if (a.paused) { a.play(); setPlaying(true); } else { a.pause(); setPlaying(false); }
+
+    if (a.paused) {
+      a.play();
+      setPlaying(true);
+    } else {
+      a.pause();
+      setPlaying(false);
+    }
   };
 
   const fmt = (s) => {
@@ -100,23 +161,29 @@ export default function TrackCard({ title, artist, artwork, src }) {
     return `${m}:${ss}`;
   };
 
+  // ============================================================
+  //  UI RENDER
+  // ============================================================
   return (
     <div className="sc-card">
-      <div className="artwork" role="img" aria-label={title || "track artwork"} style={{ backgroundImage: artwork ? `url(${artwork})` : "none" }}>
+      <div className="artwork" style={{ backgroundImage: artwork ? `url(${artwork})` : "none" }}>
         <div className="overlay" />
+
         <div className="header">
           <div className="play-wrap">
-            <button className="play" onClick={toggle} aria-label={playing ? "Pause" : "Play"}>
+            <button className="play" onClick={toggle}>
               {playing ? "▮▮" : "▶"}
             </button>
           </div>
+
           <div className="titles">
             <div className="artist">{artist || "unknown"}</div>
             <div className="title">{title || "untitled"}</div>
           </div>
+
           <div className="meta-right">
             <div className="duration">{fmt(duration)}</div>
-            <div className="dl"><a href={src} download>download</a></div>
+            {src && <div className="dl"><a href={src} download>download</a></div>}
           </div>
         </div>
 
@@ -135,49 +202,20 @@ export default function TrackCard({ title, artist, artwork, src }) {
           background-size: cover;
           background-position: center;
           border: 3px solid rgba(255, 255, 255, 0.2);
-          border-radius: 0px;
           overflow: hidden;
         }
-        .overlay {
-          position:absolute; inset:0;
-          background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));
-          pointer-events:none;
-        }
-        .header {
-          position: relative;
-          z-index: 2;
-          display:flex;
-          gap:12px;
-          align-items:center;
-          padding:16px;
-          color: #fff;
-        }
-        .play-wrap{ width:56px; flex:0 0 56px; display:flex; align-items:center; justify-content:center; }
-        .play{
-          background: rgba(255,255,255,0.08);
-          border:1px solid rgba(255,255,255,0.12);
-          color: #fff;
-          padding:10px 12px;
-          border-radius: 999px;
-          cursor:pointer;
-          font-weight:700;
-        }
-        .titles{ flex:1; display:flex; flex-direction:column; gap:6px; text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
-        .artist{ font-size:13px; opacity:0.9; text-transform: none; }
-        .title{ font-size:18px; font-weight:700; letter-spacing:0.2px; }
-        .meta-right{ display:flex; gap:12px; align-items:center; }
-        .duration{ font-size:12px; color:rgba(255,255,255,0.9); }
-        .dl a{ color:rgba(255,255,255,0.95); text-decoration:underline; font-size:13px; }
-
-        .wave-row{ position: relative; z-index:2; padding:10px 12px 14px; background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.08)); }
-        .wave-canvas{ width:100%; height:44px; display:block; }
-
-        /* small screens */
-        @media (max-width:640px){
-          .header{ padding:12px; }
-          .play-wrap{ width:48px }
-          .title{ font-size:16px }
-        }
+        .overlay { position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.25)); }
+        .header { display:flex; gap:12px; padding:16px; color:#fff; align-items:center; position:relative; z-index:2; }
+        .play-wrap { width:56px; display:flex; justify-content:center; }
+        .play { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:#fff; padding:10px 12px; border-radius:999px; cursor:pointer; }
+        .titles { flex:1; display:flex; flex-direction:column; gap:6px; }
+        .artist { font-size:13px; opacity:0.9; }
+        .title { font-size:18px; font-weight:700; }
+        .meta-right { display:flex; gap:12px; align-items:center; }
+        .duration { font-size:12px; }
+        .dl a { color:#fff; text-decoration:underline; }
+        .wave-row { padding:10px 12px 14px; background:linear-gradient(180deg,rgba(0,0,0,0.12),rgba(0,0,0,0.08)); z-index:2; }
+        .wave-canvas { width:100%; height:44px; }
       `}</style>
     </div>
   );

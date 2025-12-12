@@ -10,7 +10,8 @@ export default function Tracks({ tracks }) {
                         title={t.title || t.originalName}
                         artist={t.artist || "Unknown"}
                         artwork={t.imageUrl ? `/uploads/${t.imageUrl}` : null}
-                        src={`/uploads/${t.filename}`}
+                        localSrc={`/uploads/${t.filename}`}
+                        srcKey={t.audioKey}
                     />
                 ))}
                 {tracks.length === 0 && <div>No tracks yet.</div>}

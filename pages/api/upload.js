@@ -2,7 +2,9 @@ import prisma from "../../lib/prisma";
 import formidable from "formidable";
 import fs from "fs";
 import path from "path";
-import {decodeToken} from "./utils";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { r2 } from "../../lib/r2";
+import { decodeToken } from "./utils";
 
 export const config = {
   api: {
@@ -14,44 +16,94 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();
 
   try {
-    // 1. Verify the JWT from cookies or headers
     let userId;
+    let audioKey;
     try {
       userId = decodeToken(req);
-    }
-    catch (err) {
-      console.log("Token decode error:", err);
+    } catch (err) {
       return res.status(401).json({ error: err.message });
     }
-    // 2. Parse the form
-    const form = formidable({ multiples: true, uploadDir: "./public/uploads", keepExtensions: true });
 
-    form.parse(req, async (err, fields, files) => {
+    const form = formidable({
+      multiples: true,
+      uploadDir: "./public/uploads",
+      keepExtensions: true,
+    });
+
+    return form.parse(req, async (err, fields, files) => {
       if (err) return res.status(500).json({ error: "Error parsing form" });
 
-      let title = fields.title;
-      if (Array.isArray(title)) title = title[0];
-      let visibility = fields.visibility;
-      if (Array.isArray(visibility)) visibility = visibility[0];
+      let title = Array.isArray(fields.title) ? fields.title[0] : fields.title;
+      let visibility = Array.isArray(fields.visibility) ? fields.visibility[0] : fields.visibility;
+
       const audio = files.file?.[0];
       const artwork = files.artwork?.[0];
 
       if (!audio) return res.status(400).json({ error: "No audio file uploaded" });
 
-      const audioFilename = path.basename(audio.filepath);
-      const artworkFilename = artwork ? path.basename(artwork.filepath) : null;
+      let audioUrl;
+      let artworkUrl;
 
-      // 3. Create track with reference to userId
+      // ============================================================
+      //  LOCAL FILESYSTEM MODE
+      // ============================================================
+      if (process.env.ENVIRONMENT === "local") {
+        const audioFilename = path.basename(audio.filepath);
+        const artworkFilename = artwork ? path.basename(artwork.filepath) : null;
+
+        audioUrl = `/uploads/${audioFilename}`;
+        artworkUrl = artworkFilename ? `/uploads/${artworkFilename}` : null;
+      }
+
+      // ============================================================
+      //  CLOUDLFARE R2 MODE (PRODUCTION)
+      // ============================================================
+      else if (process.env.ENVIRONMENT === "prod") {
+        console.log("Uploading to Cloudflare R2...");
+        const audioBuffer = fs.readFileSync(audio.filepath);
+        audioKey = `audio/${Date.now()}-${audio.originalFilename}`;
+
+        await r2.send(
+          new PutObjectCommand({
+            Bucket: process.env.CLOUDFLARE_R2_BUCKET,
+            Key: audioKey,
+            Body: audioBuffer,
+            ContentType: audio.mimetype,
+          })
+        );
+
+        audioUrl = `https://${process.env.CLOUDFLARE_R2_BUCKET}.${process.env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${audioKey}`;
+
+        if (artwork) {
+          const imgBuffer = fs.readFileSync(artwork.filepath);
+          const imgKey = `artwork/${Date.now()}-${artwork.originalFilename}`;
+
+          await r2.send(
+            new PutObjectCommand({
+              Bucket: process.env.CLOUDFLARE_R2_BUCKET,
+              Key: imgKey,
+              Body: imgBuffer,
+              ContentType: artwork.mimetype,
+            })
+          );
+
+          artworkUrl = `https://${process.env.CLOUDFLARE_R2_BUCKET}.${process.env.CLOUDFLARE_R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${imgKey}`;
+        }
+      }
+
+      // ============================================================
+      //  SAVE IN DATABASE (Same for both local and R2)
+      // ============================================================
       const track = await prisma.track.create({
         data: {
-          filename: audioFilename,
-          mimetype: audio.mimetype || "application/octet-stream",
-          size: audio.size || 0,
+          filename: audioUrl,
           title: title || audio.originalFilename || "Untitled",
-          // artist: user.artistName, // optional: store artist name from JWT
-          imageUrl: artworkFilename,
-          userId: userId, // 👈 link track to the signed-in user
+          audioKey: audioKey || "",
+          mimetype: audio.mimetype,
+          size: audio.size || 0,
+          imageUrl: artworkUrl,
           private: visibility === "private",
+          userId: userId,
         },
       });
 

@@ -12,6 +12,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.948.0",
+    "@aws-sdk/s3-request-presigner": "^3.948.0",
     "@prisma/client": "^5.16.1",
     "bcrypt": "^6.0.0",
     "eslint-config-next": "^16.0.7",

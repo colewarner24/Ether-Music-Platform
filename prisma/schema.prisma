@@ -21,6 +21,7 @@ model Track {
   id        Int      @id @default(autoincrement())
   title     String
   filename  String
+  audioKey  String
   mimetype  String
   size      Int
   imageUrl  String?
