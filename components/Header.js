@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import UserMenu from "./UserMenu";
-import styles from "../styles/Header.module.css";
+import styles from "@/styles/Header.module.css";
 
 export default function Header() {
 

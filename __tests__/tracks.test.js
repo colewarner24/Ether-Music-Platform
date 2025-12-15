@@ -1,8 +1,8 @@
-import handler from "../pages/api/tracks/[artistName]";
-import prisma from "../lib/prisma";
+import handler from "@/pages/api/tracks/[artistName]";
+import prisma from "@/lib/prisma";
 import { createMocks } from "node-mocks-http";
 
-jest.mock("../lib/prisma", () => ({
+jest.mock("@/lib/prisma", () => ({
   track: {
     findMany: jest.fn(),
   },

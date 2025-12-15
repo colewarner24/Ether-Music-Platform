@@ -1,5 +1,5 @@
 // __tests__/r2.test.js
-import { r2 } from '../lib/r2';
+import { r2 } from '@/lib/r2';
 import { HeadObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 const BUCKET_NAME = process.env.CLOUDFLARE_R2_BUCKET;

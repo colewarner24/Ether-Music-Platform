@@ -1,5 +1,5 @@
 import prisma from "@lib/prisma";
-import {decodeToken} from "../utils";
+import {decodeToken} from "@/utils";
 
 export default async function handler(req, res) {
 

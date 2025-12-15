@@ -1,5 +1,5 @@
 "use client";
-import styles from "../styles/UserMenu.module.css";
+import styles from "@/styles/UserMenu.module.css";
 
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
