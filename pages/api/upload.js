@@ -1,9 +1,9 @@
-import prisma from "../../lib/prisma";
+import prisma from "@/lib/prisma";
 import formidable from "formidable";
 import fs from "fs";
 import path from "path";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { r2 } from "../../lib/r2";
+import { r2 } from "@/lib/r2";
 import { decodeToken } from "./utils";
 
 export const config = {
