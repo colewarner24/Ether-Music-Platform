@@ -47,10 +47,24 @@
   background: #f2f2f2;
 }
 
-.authLink {
+.authLinks {
   display: flex;
-  gap: 10px;
+  gap: 10px; /* space between links */
 }
+
+.authLink {
+  margin-top: 9px;
+  text-decoration: none;
+  color: #ffffff; /* dark text */
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.authLink:hover {
+  color: #3b82f6; /* changes color on hover */
+}
+
 
 .auth-btn {
   padding: 6px 12px;

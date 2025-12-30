@@ -1,4 +1,4 @@
-import handler from "@/pages/api/tracks/[artistName]";
+import handler from "@/pages/api/tracks/artist/[artistName]";
 import prisma from "@/lib/prisma";
 import { createMocks } from "node-mocks-http";
 
@@ -8,12 +8,22 @@ jest.mock("@/lib/prisma", () => ({
   },
 }));
 
-describe("GET /api/tracks/[artistName]", () => {
+describe("GET /api/tracks/artist/artist/[artistName]", () => {
   it("returns tracks for the given artist", async () => {
     // mockTracks with Date objects (what Prisma would return)
     const mockTracks = [
-      { id: 1, title: "Track A", artistId: 1, createdAt: new Date("2025-09-26T17:53:38.299Z") },
-      { id: 2, title: "Track B", artistId: 1, createdAt: new Date("2025-09-26T17:53:38.299Z") },
+      {
+        id: 1,
+        title: "Track A",
+        artistId: 1,
+        createdAt: new Date("2025-09-26T17:53:38.299Z"),
+      },
+      {
+        id: 2,
+        title: "Track B",
+        artistId: 1,
+        createdAt: new Date("2025-09-26T17:53:38.299Z"),
+      },
     ];
 
     prisma.track.findMany.mockResolvedValue(mockTracks);

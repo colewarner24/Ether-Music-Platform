@@ -1,21 +1,20 @@
-import { useRouter } from "next/router"
-import Tracks from "@components/Tracks"
-import { use, useEffect, useState } from "react"
-import { jwtDecode } from 'jwt-decode';
-
+import { useRouter } from "next/router";
+import Tracks from "@components/Tracks";
+import { use, useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useTracks } from "@/hooks/useTracks";
 
 export default function UserPage() {
-  const [tracks, setTracks] = useState([]);
+  const { tracks, setTracks, deleteTrack, updateTrack } = useTracks();
   const router = useRouter();
   const [isValidUser, setIsValidUser] = useState(false);
   const { artistName } = router.query;
 
   useEffect(() => {
-
     if (!artistName) return;
 
     const token = localStorage.getItem("token");
-    
+
     const validUser = async () => {
       let r;
       try {
@@ -27,8 +26,7 @@ export default function UserPage() {
           },
           body: JSON.stringify({ artistName }),
         });
-      } 
-      catch (error) {
+      } catch (error) {
         console.error("Error validating user:", error);
         return false;
       }
@@ -38,16 +36,14 @@ export default function UserPage() {
     if (!token) {
       console.error("No user token found in localStorage");
       return;
-    }
-    else if (validUser()) {
-      console.log("Valid user accessing their own profile");
+    } else if (validUser()) {
       setIsValidUser(true);
     }
 
     (async () => {
       let r;
       try {
-        r = await fetch("/api/tracks/" + artistName, {
+        r = await fetch("/api/tracks/artist/" + artistName, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -64,23 +60,25 @@ export default function UserPage() {
 
         const data = await r.json();
 
-        console.log("Fetched tracks for", artistName, data);
-
         setTracks(data);
       } catch (err) {
         // network / parsing error
         console.error("Unexpected error while fetching tracks:", err);
       }
     })();
-
   }, [artistName]);
 
   return (
     <div>
       <h1>{artistName}'s Profile</h1>
       <p>Welcome {artistName}! This is your page.</p>
-      <Tracks tracks={tracks} />
+      <Tracks
+        tracks={tracks}
+        onDelete={deleteTrack}
+        onEdit={updateTrack}
+        editable={isValidUser}
+      />
       {/* TODO: later add profile photo, upload form, user’s tracks */}
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
-import Dropzone from 'react-dropzone'
+import Dropzone from "react-dropzone";
 
 export default function UploadPage() {
   const router = useRouter();
@@ -11,13 +11,21 @@ export default function UploadPage() {
   const [loading, setLoading] = useState(false);
   const [visibility, setVisibility] = useState("public");
 
-  useEffect(() => {
+  useEffect(async () => {
     // Example: pull from localStorage (or cookie/JWT)
     const token = localStorage.getItem("token");
-    
+
+    const r = await fetch("/api/auth/me", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`, // attach token
+      },
+    });
+    if (!r.ok) throw new Error(await r.text());
+
     if (!token) {
       router.push("/login"); // redirect if not signed in
-    } 
+    }
   }, [router]);
 
   async function onSubmit(e) {
@@ -63,10 +71,12 @@ export default function UploadPage() {
             onChange={(e) => setFile(e.target.files?.[0] || null)}
           />
         </label> */}
-        <Dropzone onDrop={acceptedFiles => {
-          setFile(acceptedFiles[0]); // support single file only
-        }}>
-          {({getRootProps, getInputProps}) => (
+        <Dropzone
+          onDrop={(acceptedFiles) => {
+            setFile(acceptedFiles[0]); // support single file only
+          }}
+        >
+          {({ getRootProps, getInputProps }) => (
             <section>
               <div {...getRootProps()}>
                 <input {...getInputProps()} />
@@ -85,10 +95,13 @@ export default function UploadPage() {
           />
         </label>
         <label>
-          <div>
-            Visibility
-          </div>
-          <select name="visibility" id="visibility" value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+          <div>Visibility</div>
+          <select
+            name="visibility"
+            id="visibility"
+            value={visibility}
+            onChange={(e) => setVisibility(e.target.value)}
+          >
             <option value="public">Public</option>
             <option value="private">Private</option>
           </select>

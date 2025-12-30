@@ -52,7 +52,7 @@ export default async function handler(req, res) {
         const artworkFilename = artwork ? path.basename(artwork.filepath) : null;
 
         audioUrl = `/uploads/${audioFilename}`;
-        artworkUrl = artworkFilename ? `/uploads/${artworkFilename}` : null;
+        artworkUrl = artworkFilename ? `${artworkFilename}` : null;
       }
 
       // ============================================================

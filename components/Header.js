@@ -5,11 +5,9 @@ import UserMenu from "./UserMenu";
 import styles from "@/styles/Header.module.css";
 
 export default function Header() {
-
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-
     // Check if there's a saved token
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -25,9 +23,7 @@ export default function Header() {
       .catch(() => {});
   }, []);
 
-
   return (
-    console.log(styles.header),
     <div className={styles.header} id="header">
       <UserMenu user={user} setUser={setUser} />
       {/* <div className="icon-section">
@@ -59,7 +55,9 @@ export default function Header() {
           </div>
         )}
       </div> */}
-      <Link href="/" className={styles.pageTitle}>the ether</Link>
+      <Link href="/" className={styles.pageTitle}>
+        the ether
+      </Link>
       <p className={styles.pageDescription}>a music platform</p>
       {/* <p>music from the beyond</p> */}
     </div>

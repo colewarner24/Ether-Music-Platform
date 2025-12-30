@@ -23,24 +23,6 @@
   top: 10px;
 }
 
-.auth-links {
-  display: flex;
-  gap: 1rem; /* space between links */
-}
-
-.auth-link {
-  margin-top: 9px;
-  text-decoration: none;
-  color: #1a202c; /* dark text */
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.auth-link:hover {
-  color: #3b82f6; /* changes color on hover */
-}
-
 
 .profile-icon {
   border-radius: 50%;

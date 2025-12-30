@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
-export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) {
+export default function TrackCard({
+  title,
+  artist,
+  artwork,
+  srcKey,
+  localSrc,
+  onDelete,
+  onEdit,
+  editable,
+}) {
   const [src, setSrc] = useState(null);
 
   const audioRef = useRef(null);
@@ -10,13 +19,17 @@ export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) 
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [peaks, setPeaks] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
 
   // ============================================================
   //  GET AUDIO SRC: Local uses direct URL, Prod uses signed URL
   // ============================================================
   useEffect(() => {
     async function loadSrc() {
+      console.log("Environment:", process.env.ENVIRONMENT);
       if (process.env.ENVIRONMENT === "local") {
+        console.log("Using local audio source:", localSrc);
         setSrc(localSrc);
         return;
       }
@@ -24,9 +37,10 @@ export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) 
       if (!srcKey) return;
 
       try {
-        const res = await fetch(`/api/audio-url?key=${encodeURIComponent(srcKey)}`);
+        const res = await fetch(
+          `/api/audio-url?key=${encodeURIComponent(srcKey)}`
+        );
         const data = await res.json();
-        console.log("Fetched signed URL:", data.signedUrl);
         setSrc(data.signedUrl);
       } catch (err) {
         console.error("Failed to fetch signed URL:", err);
@@ -98,7 +112,9 @@ export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) 
     }
 
     genPeaks();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [src]);
 
   // ============================================================
@@ -139,6 +155,23 @@ export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) 
   }, [peaks, currentTime, duration]);
 
   // ============================================================
+  //  MENU: Close when clicking outside
+  // ============================================================
+  {
+    editable &&
+      useEffect(() => {
+        function onClick(e) {
+          if (menuRef.current && !menuRef.current.contains(e.target)) {
+            setMenuOpen(false);
+          }
+        }
+
+        document.addEventListener("mousedown", onClick);
+        return () => document.removeEventListener("mousedown", onClick);
+      }, []);
+  }
+
+  // ============================================================
   //  PLAY / PAUSE
   // ============================================================
   const toggle = () => {
@@ -157,7 +190,9 @@ export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) 
   const fmt = (s) => {
     if (!Number.isFinite(s)) return "0:00";
     const m = Math.floor(s / 60);
-    const ss = Math.floor(s % 60).toString().padStart(2, "0");
+    const ss = Math.floor(s % 60)
+      .toString()
+      .padStart(2, "0");
     return `${m}:${ss}`;
   };
 
@@ -166,7 +201,10 @@ export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) 
   // ============================================================
   return (
     <div className="sc-card">
-      <div className="artwork" style={{ backgroundImage: artwork ? `url(${artwork})` : "none" }}>
+      <div
+        className="artwork"
+        style={{ backgroundImage: artwork ? `url(${artwork})` : "none" }}
+      >
         <div className="overlay" />
 
         <div className="header">
@@ -183,19 +221,51 @@ export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) 
 
           <div className="meta-right">
             <div className="duration">{fmt(duration)}</div>
-            {src && <div className="dl"><a href={src} download>download</a></div>}
+            {src && (
+              <div className="dl">
+                <a href={src} download>
+                  download
+                </a>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="wave-row">
           <canvas ref={canvasRef} className="wave-canvas" height="44" />
         </div>
+
+        {editable && (
+          <div className="actions" ref={menuRef}>
+            <button
+              className="more"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label="Track actions"
+            >
+              ⋯
+            </button>
+
+            {menuOpen && (
+              <div className="menu">
+                <button onClick={onEdit}>Edit Track</button>
+                <button className="danger" onClick={onDelete}>
+                  Delete Track
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <audio ref={audioRef} src={src} preload="metadata" />
 
       <style jsx>{`
-        .sc-card { width:100%; max-width:900px; margin:8px auto; font-family: var(--ui-font, system-ui); }
+        .sc-card {
+          width: 100%;
+          max-width: 900px;
+          margin: 8px auto;
+          font-family: var(--ui-font, system-ui);
+        }
         .artwork {
           position: relative;
           background-color: #222;
@@ -204,18 +274,76 @@ export default function TrackCard({ title, artist, artwork, srcKey, localSrc }) 
           border: 3px solid rgba(255, 255, 255, 0.2);
           overflow: hidden;
         }
-        .overlay { position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.25)); }
-        .header { display:flex; gap:12px; padding:16px; color:#fff; align-items:center; position:relative; z-index:2; }
-        .play-wrap { width:56px; display:flex; justify-content:center; }
-        .play { background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); color:#fff; padding:10px 12px; border-radius:999px; cursor:pointer; }
-        .titles { flex:1; display:flex; flex-direction:column; gap:6px; }
-        .artist { font-size:13px; opacity:0.9; }
-        .title { font-size:18px; font-weight:700; }
-        .meta-right { display:flex; gap:12px; align-items:center; }
-        .duration { font-size:12px; }
-        .dl a { color:#fff; text-decoration:underline; }
-        .wave-row { padding:10px 12px 14px; background:linear-gradient(180deg,rgba(0,0,0,0.12),rgba(0,0,0,0.08)); z-index:2; }
-        .wave-canvas { width:100%; height:44px; }
+        .overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.25)
+          );
+        }
+        .header {
+          display: flex;
+          gap: 12px;
+          padding: 16px;
+          color: #fff;
+          align-items: center;
+          position: relative;
+          z-index: 2;
+        }
+        .play-wrap {
+          width: 56px;
+          display: flex;
+          justify-content: center;
+        }
+        .play {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          color: #fff;
+          padding: 10px 12px;
+          border-radius: 999px;
+          cursor: pointer;
+        }
+        .titles {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .artist {
+          font-size: 13px;
+          opacity: 0.9;
+        }
+        .title {
+          font-size: 18px;
+          font-weight: 700;
+        }
+        .meta-right {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+        }
+        .duration {
+          font-size: 12px;
+        }
+        .dl a {
+          color: #fff;
+          text-decoration: underline;
+        }
+        .wave-row {
+          padding: 0px 12px 0px;
+          background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.12),
+            rgba(0, 0, 0, 0.08)
+          );
+          z-index: 2;
+        }
+        .wave-canvas {
+          width: 100%;
+          height: 44px;
+        }
       `}</style>
     </div>
   );
