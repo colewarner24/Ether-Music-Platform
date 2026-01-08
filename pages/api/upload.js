@@ -34,12 +34,15 @@ export default async function handler(req, res) {
       if (err) return res.status(500).json({ error: "Error parsing form" });
 
       let title = Array.isArray(fields.title) ? fields.title[0] : fields.title;
-      let visibility = Array.isArray(fields.visibility) ? fields.visibility[0] : fields.visibility;
+      let visibility = Array.isArray(fields.visibility)
+        ? fields.visibility[0]
+        : fields.visibility;
 
       const audio = files.file?.[0];
       const artwork = files.artwork?.[0];
 
-      if (!audio) return res.status(400).json({ error: "No audio file uploaded" });
+      if (!audio)
+        return res.status(400).json({ error: "No audio file uploaded" });
 
       let audioUrl;
       let artworkUrl;
@@ -47,9 +50,11 @@ export default async function handler(req, res) {
       // ============================================================
       //  LOCAL FILESYSTEM MODE
       // ============================================================
-      if (process.env.ENVIRONMENT === "local") {
+      if (process.env.NODE_ENV === "development") {
         const audioFilename = path.basename(audio.filepath);
-        const artworkFilename = artwork ? path.basename(artwork.filepath) : null;
+        const artworkFilename = artwork
+          ? path.basename(artwork.filepath)
+          : null;
 
         audioUrl = `/uploads/${audioFilename}`;
         artworkUrl = artworkFilename ? `${artworkFilename}` : null;
@@ -58,7 +63,7 @@ export default async function handler(req, res) {
       // ============================================================
       //  CLOUDLFARE R2 MODE (PRODUCTION)
       // ============================================================
-      else if (process.env.ENVIRONMENT === "prod") {
+      else if (process.env.NODE_ENV === "production") {
         console.log("Uploading to Cloudflare R2...");
         const audioBuffer = fs.readFileSync(audio.filepath);
         audioKey = `audio/${Date.now()}-${audio.originalFilename}`;
@@ -111,6 +116,8 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error("Upload error:", error);
-    return res.status(500).json({ error: "Upload failed", details: error.message });
+    return res
+      .status(500)
+      .json({ error: "Upload failed", details: error.message });
   }
 }

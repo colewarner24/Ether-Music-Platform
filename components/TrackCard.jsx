@@ -27,8 +27,8 @@ export default function TrackCard({
   // ============================================================
   useEffect(() => {
     async function loadSrc() {
-      console.log("Environment:", process.env.ENVIRONMENT);
-      if (process.env.ENVIRONMENT === "local") {
+      console.log("NODE_ENV:", process.env.NODE_ENV);
+      if (process.env.NODE_ENV === "development") {
         console.log("Using local audio source:", localSrc);
         setSrc(localSrc);
         return;
@@ -145,11 +145,11 @@ export default function TrackCard({
 
     for (let i = 0; i < total; i++) {
       const amp = peaks ? peaks[i] : 0.25 + 0.1 * Math.sin(i * 0.2);
-      const bh = Math.max(2, Math.floor(amp * (h - 4)));
+      const bh = Math.max(2, Math.floor(amp * (h - 4))) * 3;
       const x = i * (barW + gap);
       const y = Math.floor((h - bh) / 2);
 
-      ctx.fillStyle = i <= played ? "#ffffff" : "rgba(255,255,255,0.45)";
+      ctx.fillStyle = i <= played ? "#ffffff" : "rgba(255, 255, 255, 0.69)";
       ctx.fillRect(x, y, barW, bh);
     }
   }, [peaks, currentTime, duration]);
@@ -158,17 +158,18 @@ export default function TrackCard({
   //  MENU: Close when clicking outside
   // ============================================================
   {
-    editable &&
-      useEffect(() => {
-        function onClick(e) {
-          if (menuRef.current && !menuRef.current.contains(e.target)) {
-            setMenuOpen(false);
-          }
-        }
+    useEffect(() => {
+      if (!editable) return;
 
-        document.addEventListener("mousedown", onClick);
-        return () => document.removeEventListener("mousedown", onClick);
-      }, []);
+      function onClick(e) {
+        if (menuRef.current && !menuRef.current.contains(e.target)) {
+          setMenuOpen(false);
+        }
+      }
+
+      document.addEventListener("mousedown", onClick);
+      return () => document.removeEventListener("mousedown", onClick);
+    }, []);
   }
 
   // ============================================================
@@ -178,6 +179,7 @@ export default function TrackCard({
     const a = audioRef.current;
     if (!a) return;
 
+    console.log("Toggling playback, currently paused:", a);
     if (a.paused) {
       a.play();
       setPlaying(true);

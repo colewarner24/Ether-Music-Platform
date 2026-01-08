@@ -61,9 +61,47 @@ export default async function handler(req, res) {
   // DELETE TRACK
   // ========================
   if (req.method === "DELETE") {
-    await prisma.track.delete({
+    // fetch full track info first
+    const fullTrack = await prisma.track.findUnique({
       where: { id },
+      select: {
+        filename: true,
+        imageUrl: true,
+        audioKey: true,
+      },
     });
+
+    // ========================
+    // LOCAL FILE DELETION
+    // ========================
+    if (process.env.NODE_ENV === "production") {
+      const uploadsDir = path.join(process.cwd(), "public", "uploads");
+
+      if (fullTrack?.filename) {
+        await fs
+          .unlink(path.join(uploadsDir, fullTrack.filename))
+          .catch(() => {});
+      }
+
+      if (fullTrack?.imageUrl) {
+        await fs
+          .unlink(path.join(uploadsDir, fullTrack.imageUrl))
+          .catch(() => {});
+      }
+    }
+
+    // ========================
+    // PROD (R2 / S3) DELETION
+    // ========================
+    else {
+      // deleteObject({ Key: fullTrack.audioKey })
+      // deleteObject({ Key: fullTrack.imageKey })
+    }
+
+    // ========================
+    // DB DELETE LAST
+    // ========================
+    await prisma.track.delete({ where: { id } });
 
     return res.status(204).end();
   }

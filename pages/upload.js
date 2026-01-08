@@ -3,32 +3,74 @@ import { useRouter } from "next/router";
 import Dropzone from "react-dropzone";
 
 export default function UploadPage() {
+  let defaultTitle = "";
+  let defaultFile = null;
+  let defaultArtwork = null;
+  // if (process.env.NODE_ENV === "development") {
+  //   console.log("Environment variable:", process.env.NODE_ENV);
+  //   defaultTitle = "testTrack";
+  //   defaultFile =
+  //     "C:\\Users\\cole2\\Desktop\\ether music platorm\\public\\defaults\\FISHER - STAY [Official Visualizer].mp3";
+  //   defaultArtwork =
+  //     "C:\\Users\\cole2\\Desktop\\ether music platorm\\public\\defaults\\r6y3fl9gwqqdxagw9ff3ti1ms.jpg";
+  // }
+
   const router = useRouter();
-  const [file, setFile] = useState(null);
-  const [artwork, setArtwork] = useState(null);
-  const [title, setTitle] = useState("");
+  const [file, setFile] = useState(defaultFile);
+  const [artwork, setArtwork] = useState(defaultArtwork);
+  const [title, setTitle] = useState(defaultTitle);
   //const [artist, setArtist] = useState("");
   const [loading, setLoading] = useState(false);
   const [visibility, setVisibility] = useState("public");
 
-  useEffect(async () => {
-    // Example: pull from localStorage (or cookie/JWT)
-    const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
 
-    const r = await fetch("/api/auth/me", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`, // attach token
-      },
-    });
-    if (!r.ok) throw new Error(await r.text());
+    (async () => {
+      const audio = await urlToFile(
+        "/defaults/FISHER - STAY.mp3",
+        "FISHER - STAY.mp3",
+        "audio/mpeg"
+      );
 
-    if (!token) {
-      router.push("/login"); // redirect if not signed in
+      const image = await urlToFile(
+        "/defaults/artwork.jpg",
+        "artwork.jpg",
+        "image/jpeg"
+      );
+
+      setTitle("testTrack");
+      setFile(audio);
+      setArtwork(image);
+    })();
+  }, []);
+
+  useEffect(() => {
+    async function checkAuth() {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      const r = await fetch("/api/auth/me", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!r.ok) {
+        router.push("/login");
+      }
     }
+
+    checkAuth();
   }, [router]);
 
   async function onSubmit(e) {
+    console.log("file", file);
     e.preventDefault();
     if (!file) return alert("Choose an audio file");
     setLoading(true);
@@ -115,4 +157,10 @@ export default function UploadPage() {
       </form>
     </div>
   );
+}
+
+async function urlToFile(url, filename, mime) {
+  const res = await fetch(url);
+  const blob = await res.blob();
+  return new File([blob], filename, { type: mime });
 }

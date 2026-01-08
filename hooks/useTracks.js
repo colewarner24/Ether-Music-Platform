@@ -24,7 +24,7 @@ export function useTracks(initial = []) {
     const token = localStorage.getItem("token");
 
     const res = await fetch(`/api/tracks/${trackId}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
