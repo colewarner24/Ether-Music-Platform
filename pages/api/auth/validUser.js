@@ -21,11 +21,10 @@ export default async function handler(req, res) {
   try {
     user = await prisma.user.findUnique({ where: { artistName } });
     if (!user) return res.status(404).json({ error: "User not found" });
-  }
-    catch (error) {
+  } catch (error) {
     return res.status(500).json({ error: "Database error" });
- }
- 
+  }
+
   if (!user) return res.status(404).json({ error: "User not found" });
   if (user.id !== userId) {
     return res.status(200).json({ valid: false });

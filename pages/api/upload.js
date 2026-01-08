@@ -31,7 +31,10 @@ export default async function handler(req, res) {
     });
 
     return form.parse(req, async (err, fields, files) => {
-      if (err) return res.status(500).json({ error: "Error parsing form" });
+      if (err)
+        return res
+          .status(500)
+          .json({ error: "Error parsing form: " + err.message });
 
       let title = Array.isArray(fields.title) ? fields.title[0] : fields.title;
       let visibility = Array.isArray(fields.visibility)

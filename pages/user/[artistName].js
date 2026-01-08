@@ -28,17 +28,10 @@ export default function UserPage() {
         });
       } catch (error) {
         console.error("Error validating user:", error);
-        return false;
+        return setIsValidUser(false);
       }
-      return r.json().valid;
+      return setIsValidUser(true);
     };
-
-    if (!token) {
-      console.error("No user token found in localStorage");
-      return;
-    } else if (validUser()) {
-      setIsValidUser(true);
-    }
 
     (async () => {
       let r;
