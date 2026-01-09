@@ -11,7 +11,7 @@ model User {
   id           Int      @id @default(autoincrement())
   email        String   @unique
   passwordHash String
-  artistName   String
+  artistName   String   @unique
   profilePhoto String?   // optional
   tracks       Track[]
   createdAt    DateTime @default(now())

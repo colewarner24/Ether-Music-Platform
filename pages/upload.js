@@ -41,7 +41,7 @@ export default function UploadPage() {
       // ============================================================
       //  DEVELOPMENT → LOCAL API UPLOAD
       // ============================================================
-      if (process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV === "development" && false) {
         console.log("Uploading via local API");
         const form = new FormData();
         form.append("file", file);
@@ -77,6 +77,7 @@ export default function UploadPage() {
           visibility,
           audioType: file.type,
           artworkType: artwork?.type,
+          size: file.size,
         }),
       });
 

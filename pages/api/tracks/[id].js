@@ -1,5 +1,7 @@
 import prisma from "@/lib/prisma";
 import jwt from "jsonwebtoken";
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { r2 } from "@/lib/r2";
 
 function getUserId(req) {
   const auth = req.headers.authorization;
@@ -74,7 +76,7 @@ export default async function handler(req, res) {
     // ========================
     // LOCAL FILE DELETION
     // ========================
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "production" && false) {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
 
       if (fullTrack?.filename) {
@@ -93,9 +95,41 @@ export default async function handler(req, res) {
     // ========================
     // PROD (R2 / S3) DELETION
     // ========================
+    // ========================
+    // PROD (R2 / S3) DELETION
+    // ========================
     else {
-      // deleteObject({ Key: fullTrack.audioKey })
-      // deleteObject({ Key: fullTrack.imageKey })
+      const deletes = [];
+
+      if (fullTrack.audioKey) {
+        deletes.push(
+          r2.send(
+            new DeleteObjectCommand({
+              Bucket: process.env.CLOUDFLARE_R2_BUCKET,
+              Key: fullTrack.audioKey,
+            })
+          )
+        );
+      }
+
+      if (fullTrack.imageUrl) {
+        const imageKey = fullTrack.imageUrl.split(
+          ".r2.cloudflarestorage.com/"
+        )[1];
+
+        if (imageKey) {
+          deletes.push(
+            r2.send(
+              new DeleteObjectCommand({
+                Bucket: process.env.CLOUDFLARE_R2_BUCKET,
+                Key: imageKey,
+              })
+            )
+          );
+        }
+      }
+
+      await Promise.all(deletes);
     }
 
     // ========================

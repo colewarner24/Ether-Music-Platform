@@ -32,6 +32,7 @@ export default function UserPage() {
       }
       return setIsValidUser(true);
     };
+    validUser();
 
     (async () => {
       let r;

@@ -59,7 +59,7 @@ export default async function handler(req, res) {
           ? path.basename(artwork.filepath)
           : null;
 
-        audioUrl = `/uploads/${audioFilename}`;
+        audioUrl = `/upload/${audioFilename}`;
         artworkUrl = artworkFilename ? `${artworkFilename}` : null;
       }
 

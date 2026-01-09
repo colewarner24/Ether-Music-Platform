@@ -4,9 +4,15 @@ import styles from "@/styles/NavBar.module.css";
 export default function NavBar() {
   return (
     <div className={styles.nav} id="nav">
-      <Link href="/who" className={styles.navbutton}>About</Link>
-      <Link href="/gallery" className={styles.navbutton}>Tracks</Link>
-      <Link href="/upload" className={styles.navbutton}>Upload</Link>
+      <Link href="/about" className={styles.navbutton}>
+        About
+      </Link>
+      <Link href="/tracks" className={styles.navbutton}>
+        Tracks
+      </Link>
+      <Link href="/upload" className={styles.navbutton}>
+        Upload
+      </Link>
 
       {/* <div className="drop">
         <div className="navbutton" id="shrines">
@@ -17,8 +23,12 @@ export default function NavBar() {
         </div>
       </div> */}
 
-      <Link href="/links" className={styles.navbutton}>Links</Link>
-      <Link href="/archives" className={styles.navbutton}>Archives</Link>
+      <Link href="/links" className={styles.navbutton}>
+        Links
+      </Link>
+      <Link href="/archives" className={styles.navbutton}>
+        Archives
+      </Link>
     </div>
   );
 }
