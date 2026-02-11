@@ -85,16 +85,16 @@ export default function UploadPage() {
 
       const { audioUploadUrl, artworkUploadUrl } = await r.json();
 
+      if (!audioUploadUrl) throw new Error("Missing audio upload URL");
+
       await fetch(audioUploadUrl, {
         method: "PUT",
-        headers: { "Content-Type": file.type },
         body: file,
       });
 
       if (artwork && artworkUploadUrl) {
         await fetch(artworkUploadUrl, {
           method: "PUT",
-          headers: { "Content-Type": artwork.type },
           body: artwork,
         });
       }

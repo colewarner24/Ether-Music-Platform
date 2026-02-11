@@ -14,7 +14,8 @@ node_modules
 /test-results/
 /playwright-report/
 /blob-report/
-/playwright/.cache/
-/playwright/.auth/
+tests/playwright/.cache/
+tests/playwright/.auth/
+tests/media/
 
 .vercel

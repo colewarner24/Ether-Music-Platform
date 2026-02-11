@@ -27,8 +27,7 @@ export default function TrackCard({
   // ============================================================
   useEffect(() => {
     async function loadSrc() {
-      console.log("NODE_ENV:", process.env.NODE_ENV);
-      if (process.env.NODE_ENV === "development" && false) {
+      if (process.env.NEXT_PUBLIC_STORAGE_PROVIDER === "local" && localSrc) {
         console.log("Using local audio source:", localSrc);
         setSrc(localSrc);
         return;

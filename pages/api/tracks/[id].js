@@ -76,7 +76,7 @@ export default async function handler(req, res) {
     // ========================
     // LOCAL FILE DELETION
     // ========================
-    if (process.env.NODE_ENV === "production" && false) {
+    if (process.env.NEXT_PUBLIC_STORAGE_PROVIDER === "local") {
       const uploadsDir = path.join(process.cwd(), "public", "uploads");
 
       if (fullTrack?.filename) {
@@ -95,9 +95,6 @@ export default async function handler(req, res) {
     // ========================
     // PROD (R2 / S3) DELETION
     // ========================
-    // ========================
-    // PROD (R2 / S3) DELETION
-    // ========================
     else {
       const deletes = [];
 
@@ -105,7 +102,7 @@ export default async function handler(req, res) {
         deletes.push(
           r2.send(
             new DeleteObjectCommand({
-              Bucket: process.env.CLOUDFLARE_R2_BUCKET,
+              Bucket: process.env.CLOUDFLARE_R2_AUDIO_BUCKET,
               Key: fullTrack.audioKey,
             })
           )
@@ -121,7 +118,7 @@ export default async function handler(req, res) {
           deletes.push(
             r2.send(
               new DeleteObjectCommand({
-                Bucket: process.env.CLOUDFLARE_R2_BUCKET,
+                Bucket: process.env.CLOUDFLARE_R2_IMAGES_BUCKET,
                 Key: imageKey,
               })
             )

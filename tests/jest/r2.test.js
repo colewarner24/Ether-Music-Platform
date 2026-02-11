@@ -6,7 +6,7 @@ import {
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 
-const BUCKET_NAME = process.env.CLOUDFLARE_R2_BUCKET;
+const BUCKET_NAME = process.env.CLOUDFLARE_R2_AUDIO_BUCKET;
 const TEST_KEY = "r2-healthcheck.txt";
 
 describe("Cloudflare R2 Connectivity", () => {

@@ -3,7 +3,7 @@ import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { r2 } from "@/lib/r2";
 
-const BUCKET_NAME = process.env.CLOUDFLARE_R2_BUCKET;
+const BUCKET_NAME = process.env.CLOUDFLARE_R2_AUDIO_BUCKET;
 
 export default async function handler(req, res) {
   const { key } = req.query;
