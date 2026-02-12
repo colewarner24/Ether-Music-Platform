@@ -44,14 +44,14 @@ export default async function handler(req, res) {
   // EDIT TRACK
   // ========================
   if (req.method === "PATCH") {
-    const { title, artist, imageUrl, private: isPrivate } = req.body;
+    const { title, artist, imageKey, private: isPrivate } = req.body;
 
     const updated = await prisma.track.update({
       where: { id },
       data: {
         ...(title !== undefined && { title }),
         ...(artist !== undefined && { artist }),
-        ...(imageUrl !== undefined && { imageUrl }),
+        ...(imageKey !== undefined && { imageKey }),
         ...(isPrivate !== undefined && { private: isPrivate }),
       },
     });
@@ -67,9 +67,9 @@ export default async function handler(req, res) {
     const fullTrack = await prisma.track.findUnique({
       where: { id },
       select: {
-        filename: true,
-        imageUrl: true,
+        title: true,
         audioKey: true,
+        imageKey: true,
       },
     });
 
@@ -85,9 +85,9 @@ export default async function handler(req, res) {
           .catch(() => {});
       }
 
-      if (fullTrack?.imageUrl) {
+      if (fullTrack?.imageKey) {
         await fs
-          .unlink(path.join(uploadsDir, fullTrack.imageUrl))
+          .unlink(path.join(uploadsDir, fullTrack.imageKey))
           .catch(() => {});
       }
     }
@@ -98,31 +98,45 @@ export default async function handler(req, res) {
     else {
       const deletes = [];
 
-      if (fullTrack.audioKey) {
-        deletes.push(
-          r2.send(
-            new DeleteObjectCommand({
-              Bucket: process.env.CLOUDFLARE_R2_AUDIO_BUCKET,
-              Key: fullTrack.audioKey,
-            })
-          )
-        );
-      }
-
-      if (fullTrack.imageUrl) {
-        const imageKey = fullTrack.imageUrl.split(
-          ".r2.cloudflarestorage.com/"
-        )[1];
-
-        if (imageKey) {
+      try {
+        if (fullTrack.audioKey) {
           deletes.push(
             r2.send(
               new DeleteObjectCommand({
-                Bucket: process.env.CLOUDFLARE_R2_IMAGES_BUCKET,
-                Key: imageKey,
-              })
-            )
+                Bucket: process.env.CLOUDFLARE_R2_AUDIO_BUCKET,
+                Key: fullTrack.audioKey,
+              }),
+            ),
           );
+        }
+      } catch (err) {
+        console.error("Error deleting audio from R2:", err);
+        return res
+          .status(500)
+          .json({ error: "Failed to delete audio file with " + err.message });
+      }
+
+      if (fullTrack.imageKey) {
+        const imageKey = fullTrack.imageKey.split(
+          ".r2.cloudflarestorage.com/",
+        )[1];
+
+        if (imageKey) {
+          try {
+            deletes.push(
+              r2.send(
+                new DeleteObjectCommand({
+                  Bucket: process.env.CLOUDFLARE_R2_IMAGES_BUCKET,
+                  Key: imageKey,
+                }),
+              ),
+            );
+          } catch (err) {
+            console.error("Error deleting image from R2:", err);
+            return res.status(500).json({
+              error: "Failed to delete image file with " + err.message,
+            });
+          }
         }
       }
 
@@ -132,7 +146,14 @@ export default async function handler(req, res) {
     // ========================
     // DB DELETE LAST
     // ========================
-    await prisma.track.delete({ where: { id } });
+    try {
+      await prisma.track.delete({ where: { id } });
+    } catch (err) {
+      console.error("Error deleting track from DB:", err);
+      return res
+        .status(500)
+        .json({ error: "Failed to delete track with " + err.message });
+    }
 
     return res.status(204).end();
   }
