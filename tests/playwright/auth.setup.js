@@ -1,4 +1,4 @@
-import { test as setup, expect } from "@playwright/test";
+import { test as setup, expect, request } from "@playwright/test";
 import path from "path";
 import { LoginPage } from "./pages/LoginPage.js";
 import { ProfilePage } from "./pages/ProfilePage.js";
@@ -7,30 +7,38 @@ import fs from "fs";
 
 const authFile = path.join(__dirname, "./.auth/user.json");
 
-setup("authenticate", async ({ page }) => {
-  //check if auth state file exists and has token
+setup("authenticate", async ({ page, browser }) => {
+  const baseURL = process.env.BASE_URL || "https://www.ether2.net";
+
   if (fs.existsSync(authFile)) {
-    const state = JSON.parse(fs.readFileSync(authFile, "utf-8"));
+    const context = await browser.newContext({ storageState: authFile });
+    const requestContext = context.request;
 
-    const hasToken = state.origins?.some((origin) =>
-      origin.localStorage?.some((item) => item.name === "token"),
-    );
+    try {
+      const res = await requestContext.get(`${baseURL}/api/me`);
 
-    if (hasToken) {
-      console.log("✅ Auth state already exists, skipping login");
-      return;
+      if (res.ok()) {
+        console.log("Auth state valid, skipping login");
+        await context.close();
+        return;
+      } else {
+        console.log(" Stored auth invalid, re-authenticating...");
+      }
+    } catch (err) {
+      console.log("Auth validation failed, re-authenticating...");
     }
+
+    await context.close();
   }
 
-  // Perform authentication steps. Replace these actions with your own.)
+  // 🔐 Perform login
   const loginPage = new LoginPage(page);
   await loginPage.goto();
   await loginPage.Login(process.env.TEST_EMAIL, process.env.TEST_PASSWORD);
 
   await page.waitForURL("/user/" + process.env.TEST_USERNAME);
-  // Alternatively, you can wait until the page reaches a state where all cookies are set.
   await new ProfilePage(page, process.env.TEST_USERNAME).isProfileVisible();
 
-  // End of authentication steps.
+  // 💾 Save fresh auth state
   await page.context().storageState({ path: authFile });
 });

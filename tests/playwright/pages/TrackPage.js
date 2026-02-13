@@ -1,41 +1,22 @@
-export class TrackPage {
+import { BaseTrackPage } from "./BaseTrackPage.js";
+import { expect } from "@playwright/test";
+
+export class TrackPage extends BaseTrackPage {
   constructor(page) {
-    this.page = page;
-    this.tracks = page.locator(".sc-card");
+    super(page);
   }
 
   async goto() {
-    await this.page.goto(`/tracks`);
+    await this.page.goto("/tracks", {
+      waitUntil: "domcontentloaded",
+    });
   }
 
   async isPageLoaded() {
-    try {
-      await this.page
-        .getByRole("heading", { name: "Tracks" })
-        .waitFor({ timeout: 5000 });
-    } catch (e) {
-      throw new Error(
-        "Track page did not load properly. with error: " + e.message,
-      );
-    }
-    return true;
-  }
+    await expect(
+      this.page.getByRole("heading", { name: "Tracks" }),
+    ).toBeVisible({ timeout: 10000 });
 
-  async isTrackVisible(title) {
-    try {
-      await this.page
-        .locator(".sc-card", { hasText: title })
-        .nth(0)
-        .waitFor({ timeout: 5000 });
-    } catch (e) {
-      throw new Error(
-        `Track with title "${title}" not found on the page. with error: ${e.message}`,
-      );
-    }
     return true;
-  }
-
-  async deleteTrack(title) {
-    await this.page.pause();
   }
 }

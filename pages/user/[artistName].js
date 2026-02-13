@@ -3,14 +3,17 @@ import Tracks from "@components/Tracks";
 import { use, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useTracks } from "@/hooks/useTracks";
+import Loading from "@/components/Loading";
 
 export default function UserPage() {
   const { tracks, setTracks, deleteTrack, updateTrack } = useTracks();
   const router = useRouter();
   const [isValidUser, setIsValidUser] = useState(false);
   const { artistName } = router.query;
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     if (!artistName) return;
 
     const token = localStorage.getItem("token");
@@ -55,6 +58,7 @@ export default function UserPage() {
         const data = await r.json();
 
         setTracks(data);
+        setLoading(false);
       } catch (err) {
         // network / parsing error
         console.error("Unexpected error while fetching tracks:", err);
@@ -62,17 +66,21 @@ export default function UserPage() {
     })();
   }, [artistName]);
 
-  return (
-    <div>
-      <h1>{artistName}'s Profile</h1>
-      <p>Welcome {artistName}! This is your page.</p>
-      <Tracks
-        tracks={tracks}
-        onDelete={deleteTrack}
-        onEdit={updateTrack}
-        editable={isValidUser}
-      />
-      {/* TODO: later add profile photo, upload form, user’s tracks */}
-    </div>
-  );
+  if (loading) {
+    return <Loading />;
+  } else {
+    return (
+      <div>
+        <h1>{artistName}'s Profile</h1>
+        <p>Welcome {artistName}! This is your page.</p>
+        <Tracks
+          tracks={tracks}
+          onDelete={deleteTrack}
+          onEdit={updateTrack}
+          editable={isValidUser}
+        />
+        {/* TODO: later add profile photo, upload form, user’s tracks */}
+      </div>
+    );
+  }
 }

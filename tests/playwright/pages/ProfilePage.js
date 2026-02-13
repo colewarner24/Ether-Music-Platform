@@ -1,26 +1,31 @@
-import { get } from "node:http";
+import { BaseTrackPage } from "./BaseTrackPage.js";
+import { expect } from "@playwright/test";
 
-export class ProfilePage {
+export class ProfilePage extends BaseTrackPage {
   constructor(page, username) {
-    this.page = page;
+    super(page);
     this.username = username;
   }
 
   async goto() {
-    await this.page.goto(`/user/${this.username}`);
+    await this.page.goto(`/user/${this.username}`, {
+      waitUntil: "domcontentloaded",
+    });
   }
 
   async isProfileVisible() {
-    await this.page
-      .getByRole("heading", { name: `${this.username}'s Profile` })
-      .waitFor();
+    await expect(
+      this.page.getByRole("heading", {
+        name: `${this.username}'s Profile`,
+      }),
+    ).toBeVisible({ timeout: 10000 });
+
     return true;
   }
 
   async hasAuthToken() {
-    console.log(await this.page.evaluate(() => Object.keys(localStorage)));
-    return await this.page.evaluate(() => {
-      return Boolean(localStorage.getItem("token"));
-    });
+    return await this.page.evaluate(() =>
+      Boolean(localStorage.getItem("token")),
+    );
   }
 }

@@ -1,8 +1,9 @@
 import { ProfilePage } from "./ProfilePage.js";
+import { BasePage } from "./BasePage.js";
 
-class LoginPage {
+class LoginPage extends BasePage {
   constructor(page) {
-    this.page = page;
+    super(page);
   }
 
   async goto() {

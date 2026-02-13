@@ -1,25 +1,14 @@
+import { BasePage } from "./BasePage.js";
 import { TrackPage } from "./TrackPage.js";
 
-export class UploadPage {
+export class UploadPage extends BasePage {
   constructor(page) {
-    this.page = page;
-
-    this.page.on("pageerror", (err) => {
-      console.error("Page error:", err.message);
-      //throw new Error(`Page error: ${err.message}`);
-    });
-
-    // this.page.on("console", (msg) => {
-    //   if (msg.type() === "error") {
-    //     console.log("Console error:", msg.text());
-    //     throw new Error(`Console error: ${msg.text()}`);
-    //   }
-    // });
-
-    this.page.on("dialog", (dialog) => {
-      console.log("Alert shown:", dialog.message());
-      dialog.dismiss();
-    });
+    super(page);
+    this.audioInput = page.getByRole("button", { name: "Choose File" });
+    this.imageInput = page.getByRole("button", { name: "Artwork (optional)" });
+    this.visibilitySelect = page.getByLabel("VisibilityPublicPrivate");
+    this.heading = page.getByRole("heading", { name: "Upload a Track" });
+    this.uploadButton = page.getByRole("button", { name: "Upload" });
   }
 
   async goto() {
@@ -31,30 +20,21 @@ export class UploadPage {
 
   async uploadTrack(title, filePath, imagePath = null, visibility = "public") {
     await this.page.getByRole("textbox", { name: "Track title" }).fill(title);
-    await this.page
-      .getByRole("button", { name: "Choose File" })
-      .setInputFiles(filePath);
-    // const upload = this.page.locator('div:has-text("Drag & drop audio")');
-    // const fileInput = await upload.locator('input[type="file"]');
-    // await fileInput.setInputFiles(filePath);
+
+    await this.audioInput.setInputFiles(filePath);
     if (imagePath) {
-      await this.page;
-      getByRole("button", { name: "Artwork (optional)" }).setInputFiles(
-        imagePath,
-      );
+      await this.imageInput.setInputFiles(imagePath);
     }
     if (visibility === "private") {
-      await this.page
-        .getByLabel("VisibilityPublicPrivate")
-        .selectOption("Private");
+      await this.visibilitySelect.selectOption("Private");
     }
-    await this.page.getByRole("button", { name: "Upload" }).click();
+    await this.uploadButton.click();
     await this.page.waitForURL("/tracks", { timeout: 10000 });
     return new TrackPage(this.page);
   }
 
   async isOnUploadPage() {
-    await this.page.getByRole("heading", { name: "Upload a Track" }).waitFor();
+    await this.heading.waitFor();
     return true;
   }
 }
