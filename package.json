@@ -29,7 +29,8 @@
     "playwright": "^1.57.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "react-dropzone": "^14.3.8"
+    "react-dropzone": "^14.3.8",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@playwright/test": "^1.57.0",
