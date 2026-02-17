@@ -10,15 +10,20 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-      - name: Debug - list files
-        run: ls -la
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22.13.0
+          cache: "npm"
       - name: Install dependencies
         run: npm install
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - name: Build app
+        run: npm run build
+      - name: Start app
+        run: npm start &
+      - name: Wait for app to be ready
+        run: npx wait-on http://localhost:3000 --timeout 60000
       - name: Run Playwright Tests
         run: npx playwright test
