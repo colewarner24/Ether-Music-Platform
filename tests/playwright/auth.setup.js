@@ -10,6 +10,16 @@ const authFile = path.join(__dirname, "./.auth/user.json");
 setup("authenticate", async ({ page, browser }) => {
   const baseURL = process.env.BASE_URL || "http://localhost:3000";
 
+  if (
+    !process.env.TEST_EMAIL ||
+    !process.env.TEST_PASSWORD ||
+    !process.env.TEST_USERNAME
+  ) {
+    throw new Error(
+      "Environment variables TEST_EMAIL, TEST_PASSWORD, and TEST_USERNAME are not set",
+    );
+  }
+
   if (fs.existsSync(authFile)) {
     const context = await browser.newContext({ storageState: authFile });
     const requestContext = context.request;
