@@ -8,7 +8,7 @@ import fs from "fs";
 const authFile = path.join(__dirname, "./.auth/user.json");
 
 setup("authenticate", async ({ page, browser }) => {
-  const baseURL = process.env.BASE_URL || "https://www.ether2.net";
+  const baseURL = process.env.BASE_URL || "http://localhost:3000";
 
   if (fs.existsSync(authFile)) {
     const context = await browser.newContext({ storageState: authFile });

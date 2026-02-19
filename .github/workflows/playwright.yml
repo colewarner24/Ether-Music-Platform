@@ -27,3 +27,8 @@ jobs:
         run: npx wait-on http://localhost:3000 --timeout 60000
       - name: Run Playwright Tests
         run: npx playwright test
+        env:
+          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+          BASE_URL: ${{ secrets.BASE_URL }}
