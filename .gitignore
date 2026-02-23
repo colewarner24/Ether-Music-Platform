@@ -16,6 +16,5 @@ node_modules
 /blob-report/
 tests/playwright/.cache/
 tests/playwright/.auth/
-tests/media/
 
 .vercel
