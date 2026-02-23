@@ -50,6 +50,12 @@ setup("authenticate", async ({ page, browser }) => {
   console.log("Current URL after login:", page.url());
   console.log("Page title:", await page.title());
 
+  page.on("response", (response) => {
+    if (!response.ok()) {
+      console.log("Failed request:", response.url(), response.status());
+    }
+  });
+
   await page.waitForURL("/user/" + process.env.TEST_USERNAME);
   await new ProfilePage(page, process.env.TEST_USERNAME).isProfileVisible();
 
