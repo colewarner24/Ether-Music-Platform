@@ -33,7 +33,15 @@ jobs:
       - name: Run Playwright Tests
         run: npx playwright test
         env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
           BASE_URL: ${{ secrets.BASE_URL }}
+          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+          CLOUDFLARE_R2_AUDIO_BUCKET: ${{ secrets.CLOUDFLARE_R2_AUDIO_BUCKET }}
+          CLOUDFLARE_R2_IMAGES_BUCKET: ${{ secrets.CLOUDFLARE_R2_IMAGES_BUCKET }}
+          CLOUDFLARE_R2_PUBLIC_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_URL }}
+          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+          NEXT_PUBLIC_MEDIA_BASE_URL: ${{ secrets.NEXT_PUBLIC_MEDIA_BASE_URL }}
