@@ -7,42 +7,53 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
+      TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+      BASE_URL: ${{ secrets.BASE_URL }}
+      CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
+      CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
+      CLOUDFLARE_R2_AUDIO_BUCKET: ${{ secrets.CLOUDFLARE_R2_AUDIO_BUCKET }}
+      CLOUDFLARE_R2_IMAGES_BUCKET: ${{ secrets.CLOUDFLARE_R2_IMAGES_BUCKET }}
+      CLOUDFLARE_R2_PUBLIC_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_URL }}
+      CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
+      NEXT_PUBLIC_MEDIA_BASE_URL: ${{ secrets.NEXT_PUBLIC_MEDIA_BASE_URL }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22.13.0
           cache: "npm"
+
       - name: Cache Playwright browsers
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies
         run: npm install
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+
       - name: Build app
-        run: npm run build
+        run: npx next build
+
       - name: Start app
         run: npm start &
+
       - name: Wait for app to be ready
         run: npx wait-on http://localhost:3000 --timeout 60000
+
       - name: Run Playwright Tests
         run: npx playwright test
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
-          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
-          BASE_URL: ${{ secrets.BASE_URL }}
-          CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
-          CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
-          CLOUDFLARE_R2_AUDIO_BUCKET: ${{ secrets.CLOUDFLARE_R2_AUDIO_BUCKET }}
-          CLOUDFLARE_R2_IMAGES_BUCKET: ${{ secrets.CLOUDFLARE_R2_IMAGES_BUCKET }}
-          CLOUDFLARE_R2_PUBLIC_URL: ${{ secrets.CLOUDFLARE_R2_PUBLIC_URL }}
-          CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
-          NEXT_PUBLIC_MEDIA_BASE_URL: ${{ secrets.NEXT_PUBLIC_MEDIA_BASE_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
