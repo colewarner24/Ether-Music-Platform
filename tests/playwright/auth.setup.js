@@ -46,6 +46,10 @@ setup("authenticate", async ({ page, browser }) => {
   await loginPage.goto();
   await loginPage.Login(process.env.TEST_EMAIL, process.env.TEST_PASSWORD);
 
+  await page.waitForTimeout(3000);
+  console.log("Current URL after login:", page.url());
+  console.log("Page title:", await page.title());
+
   await page.waitForURL("/user/" + process.env.TEST_USERNAME);
   await new ProfilePage(page, process.env.TEST_USERNAME).isProfileVisible();
 
