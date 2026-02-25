@@ -32,6 +32,7 @@ jobs:
           cache: "npm"
 
       - name: Cache Playwright browsers
+        id: playwright-cache
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
@@ -45,6 +46,11 @@ jobs:
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+
+      - name: Install Playwright system deps only
+        run: npx playwright install-deps
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
 
       - name: Build app
         run: npx next build
@@ -55,5 +61,27 @@ jobs:
       - name: Wait for app to be ready
         run: npx wait-on http://localhost:3000 --timeout 60000
 
+      - name: Create test media files
+        run: |
+          mkdir -p tests/media
+          dd if=/dev/urandom bs=1024 count=100 > "tests/media/Like A G6.mp3"
+
       - name: Run Playwright Tests
         run: npx playwright test
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      - name: Deploy to Vercel
+        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
