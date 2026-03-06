@@ -12,6 +12,7 @@ _________________________ ________________________
 
 <div align="left">
 
+live app --> ether2.net
 
 Ether is a full-stack audio sharing platform built with Next.js, Prisma, and PostgreSQL, designed for independent artists to upload, manage, and share music.
 It uses serverless infrastructure on Vercel, Cloudflare R2 for object storage, and Neon PostgreSQL for production data.
