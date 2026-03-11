@@ -10,6 +10,12 @@ const createJestConfig = nextJest({
 const config = {
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
+  // Exclude Playwright tests - they should only run via 'npx playwright test'
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/.next/',
+    '/tests/playwright/',
+  ],
   // Add more setup options before each test is run
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 }

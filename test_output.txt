@@ -1,0 +1,115 @@
+
+> next-music-local@0.1.0 test
+> jest
+
+
+==================================================
+App Started and in XXx [ test using storage provider: r2 ] xXX mode yayyy!
+==================================================
+
+FAIL tests/jest/validUser.test.js
+  ΓùÅ Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/index.js:1057:18)
+      at node_modules/@jest/core/build/index.js:1127:165
+      at node_modules/emittery/index.js:363:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+
+FAIL tests/jest/tracks.test.js
+  ΓùÅ Test suite failed to run
+
+    Cannot find module '@/lib/prisma' from 'tests/jest/tracks.test.js'
+
+      3 | import { createMocks } from "node-mocks-http";
+      4 |
+    > 5 | jest.mock("@/lib/prisma", () => ({
+        |      ^
+      6 |   track: {
+      7 |     findMany: jest.fn(),
+      8 |   },
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.mock (tests/jest/tracks.test.js:5:6)
+
+PASS tests/jest/health.test.js
+PASS tests/jest/audio-url.test.js
+PASS tests/jest/dbHealth.test.js
+  ΓùÅ Console
+
+    console.log
+      Checking database connection...
+
+      at log (pages/api/health/dbHealth.js:8:17)
+
+    console.log
+      [ [ 200 ] ]
+
+      at Object.log (tests/jest/dbHealth.test.js:13:17)
+
+FAIL tests/playwright/specs/track.spec.js
+  ΓùÅ Test suite failed to run
+
+    TypeError: Class extends value undefined is not a constructor or null
+
+    
+
+      at Object.<anonymous> (node_modules/playwright-core/lib/mcpBundleImpl/index.js:119:3983)
+      at Object.<anonymous> (node_modules/playwright-core/lib/mcpBundle.js:49:22)
+      at Object.<anonymous> (node_modules/playwright-core/lib/server/utils/nodePlatform.js:45:24)
+      at Object.<anonymous> (node_modules/playwright-core/lib/utils.js:56:27)
+      at Object.<anonymous> (node_modules/playwright-core/lib/server/registry/index.js:48:20)
+      at Object.<anonymous> (node_modules/playwright-core/lib/server/index.js:37:23)
+      at Object.<anonymous> (node_modules/playwright-core/lib/remote/playwrightConnection.js:24:21)
+      at Object.<anonymous> (node_modules/playwright-core/lib/remote/playwrightServer.js:24:35)
+      at Object.<anonymous> (node_modules/playwright-core/lib/androidServerImpl.js:24:31)
+      at Object.<anonymous> (node_modules/playwright-core/lib/inProcessFactory.js:24:32)
+      at Object.<anonymous> (node_modules/playwright-core/lib/inprocess.js:2:31)
+      at Object.<anonymous> (node_modules/playwright-core/index.js:32:18)
+      at Object.<anonymous> (node_modules/playwright/lib/index.js:41:33)
+      at Object.<anonymous> (node_modules/playwright/test.js:17:13)
+      at Object.<anonymous> (node_modules/@playwright/test/index.js:17:18)
+      at Object.<anonymous> (tests/playwright/fixtures/auth.js:19:15)
+      at Object.<anonymous> (tests/playwright/specs/track.spec.js:6:15)
+
+FAIL tests/playwright/specs/login.spec.js
+  ΓùÅ Test suite failed to run
+
+    TypeError: Class extends value undefined is not a constructor or null
+
+    
+
+      at Object.<anonymous> (node_modules/playwright-core/lib/mcpBundleImpl/index.js:119:3983)
+      at Object.<anonymous> (node_modules/playwright-core/lib/mcpBundle.js:49:22)
+      at Object.<anonymous> (node_modules/playwright-core/lib/server/utils/nodePlatform.js:45:24)
+      at Object.<anonymous> (node_modules/playwright-core/lib/utils.js:56:27)
+      at Object.<anonymous> (node_modules/playwright-core/lib/server/registry/index.js:48:20)
+      at Object.<anonymous> (node_modules/playwright-core/lib/server/index.js:37:23)
+      at Object.<anonymous> (node_modules/playwright-core/lib/remote/playwrightConnection.js:24:21)
+      at Object.<anonymous> (node_modules/playwright-core/lib/remote/playwrightServer.js:24:35)
+      at Object.<anonymous> (node_modules/playwright-core/lib/androidServerImpl.js:24:31)
+      at Object.<anonymous> (node_modules/playwright-core/lib/inProcessFactory.js:24:32)
+      at Object.<anonymous> (node_modules/playwright-core/lib/inprocess.js:2:31)
+      at Object.<anonymous> (node_modules/playwright-core/index.js:32:18)
+      at Object.<anonymous> (node_modules/playwright/lib/index.js:41:33)
+      at Object.<anonymous> (node_modules/playwright/test.js:17:13)
+      at Object.<anonymous> (node_modules/@playwright/test/index.js:17:18)
+      at Object.<anonymous> (tests/playwright/fixtures/auth.js:19:15)
+      at Object.<anonymous> (tests/playwright/specs/login.spec.js:5:15)
+
+PASS tests/jest/r2.test.js
+  ΓùÅ Console
+
+    console.log
+      R2 connectivity test successful
+
+      at Object.log (tests/jest/r2.test.js:41:15)
+
+
+Test Suites: 4 failed, 4 passed, 8 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        9.428 s
+Ran all test suites.

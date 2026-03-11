@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Tracks from "@/components/Tracks";
 import Loading from "@/components/Loading";
 import { useTracks } from "@/hooks/useTracks";
@@ -6,14 +6,68 @@ import { useTracks } from "@/hooks/useTracks";
 export default function TracksPage() {
   const { tracks, setTracks, deleteTrack, updateTrack } = useTracks();
   const [loading, setLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [skip, setSkip] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const observerTarget = useRef(null);
+
+  const fetchTracks = useCallback(
+    async (skipValue = 0) => {
+      try {
+        const isInitial = skipValue === 0;
+        if (isInitial) setLoading(true);
+        else setIsLoadingMore(true);
+
+        const response = await fetch(`/api/tracks?skip=${skipValue}&take=10`);
+        const data = await response.json();
+
+        if (isInitial) {
+          setTracks(data.tracks);
+        } else {
+          setTracks((prev) => [...prev, ...data.tracks]);
+        }
+
+        setSkip(skipValue + data.tracks.length);
+        setHasMore(data.hasMore);
+      } catch (error) {
+        console.error("Error fetching tracks:", error);
+      } finally {
+        setLoading(false);
+        setIsLoadingMore(false);
+      }
+    },
+    [setTracks],
+  );
 
   useEffect(() => {
-    (async () => {
-      const r = await fetch("/api/tracks");
-      setLoading(false);
-      setTracks(await r.json());
-    })();
+    fetchTracks(0);
   }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries[0].isIntersecting &&
+          hasMore &&
+          !isLoadingMore &&
+          !loading
+        ) {
+          fetchTracks(skip);
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
+    }
+
+    return () => {
+      if (observerTarget.current) {
+        observer.unobserve(observerTarget.current);
+      }
+    };
+  }, [skip, hasMore, isLoadingMore, loading, fetchTracks]);
 
   if (loading) {
     return (
@@ -33,6 +87,26 @@ export default function TracksPage() {
         <a href="/upload">Upload a new track →</a>
       </p>
       <Tracks tracks={tracks} onDelete={deleteTrack} onEdit={updateTrack} />
+
+      {hasMore && (
+        <div
+          ref={observerTarget}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "20px",
+            marginTop: "20px",
+          }}
+        >
+          {isLoadingMore && <Loading />}
+        </div>
+      )}
+
+      {!hasMore && tracks.length > 0 && (
+        <p style={{ textAlign: "center", color: "#666", marginTop: "20px" }}>
+          No more tracks to load
+        </p>
+      )}
     </div>
   );
 }
