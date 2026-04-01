@@ -15,6 +15,7 @@ model User {
   profilePhoto String?   // optional
   tracks       Track[]
   createdAt    DateTime @default(now())
+  isAdmin      Boolean  @default(false)
 }
 
 model Track {

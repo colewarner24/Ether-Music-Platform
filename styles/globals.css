@@ -14,26 +14,25 @@
 }
 
 :root {
-  --ui-font:
-    "Trubec", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --ui-font: "Trubec", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-html,
-body,
-#__next {
+html, body, #__next {
   height: 100%;
   background-color: #15141a;
 }
 
 body {
-  background-color: #5a5a5a; /* your choice */
-  color: #fff; /* optional: make text readable on black */
+  background-color: #5a5a5a;
+  color: #fff;
   font-family: var(--ui-font);
+  margin: 0;
+  padding: 0;
 }
 
 #container {
-  width: 800px; /* adjust width to taste */
-  margin: 20px auto; /* centers horizontally */
+  width: 800px;
+  margin: 20px auto;
   background-color: black;
   border: 1px solid #1a74ff;
   border-radius: 7px;
@@ -41,15 +40,27 @@ body {
   font-family: "Trubec";
 }
 
-#tracks {
-  text-align: center;
+@media (max-width: 768px) {
+  #container {
+    width: calc(100% - 20px);
+    margin: 10px auto;
+    padding: 8px;
+    border-radius: 4px;
+  }
 }
 
-#container,
-#header,
-#footer {
-  border: 1px solid #1a74ff;
+@media (max-width: 480px) {
+  #container {
+    width: calc(100% - 16px);
+    margin: 5px auto;
+    padding: 6px;
+    border-radius: 3px;
+  }
 }
+
+#tracks { text-align: center; }
+
+#container, #header, #footer { border: 1px solid #1a74ff; }
 
 .spinner {
   border: 6px solid #f3f3f3;
@@ -61,13 +72,18 @@ body {
   animation: spin 1s linear infinite;
 }
 
+@media (max-width: 480px) {
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #1a74ff;
+  }
+}
+
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .actions-row {
@@ -78,11 +94,7 @@ body {
   z-index: 2;
 }
 
-.actions {
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-}
+.actions { position: relative; display: flex; justify-content: flex-end; }
 
 .more {
   background: transparent;
@@ -90,12 +102,15 @@ body {
   color: rgba(255, 255, 255, 0.7);
   font-size: 20px;
   cursor: pointer;
-  padding: 4px 16px;
+  padding: 8px 12px;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.more:hover {
-  color: #fff;
-}
+.more:hover { color: #fff; }
 
 .menu {
   position: absolute;
@@ -109,6 +124,13 @@ body {
   z-index: 50;
 }
 
+@media (max-width: 480px) {
+  .menu {
+    min-width: 140px;
+    font-size: 12px;
+  }
+}
+
 .menu button {
   width: 100%;
   padding: 10px 12px;
@@ -118,12 +140,18 @@ body {
   text-align: left;
   font-size: 13px;
   cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
 }
 
-.menu button:hover {
-  background: rgba(255, 255, 255, 0.08);
+@media (max-width: 480px) {
+  .menu button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
 }
 
-.menu .danger {
-  color: #ff6b6b;
-}
+.menu button:hover { background: rgba(255, 255, 255, 0.08); }
+
+.menu .danger { color: #ff6b6b; }

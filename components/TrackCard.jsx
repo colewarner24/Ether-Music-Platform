@@ -267,6 +267,21 @@ export default function TrackCard({
           margin: 8px auto;
           font-family: var(--ui-font, system-ui);
         }
+
+        @media (max-width: 768px) {
+          .sc-card {
+            max-width: calc(100% - 10px);
+            margin: 6px auto;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .sc-card {
+            max-width: calc(100% - 8px);
+            margin: 4px auto;
+          }
+        }
+
         .artwork {
           position: relative;
           background-color: #222;
@@ -292,12 +307,37 @@ export default function TrackCard({
           align-items: center;
           position: relative;
           z-index: 2;
+          flex-wrap: wrap;
         }
+
+        @media (max-width: 768px) {
+          .header {
+            gap: 10px;
+            padding: 12px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .header {
+            gap: 8px;
+            padding: 8px;
+            font-size: 12px;
+          }
+        }
+
         .play-wrap {
           width: 56px;
           display: flex;
           justify-content: center;
+          flex-shrink: 0;
         }
+
+        @media (max-width: 480px) {
+          .play-wrap {
+            width: 44px;
+          }
+        }
+
         .play {
           background: rgba(255, 255, 255, 0.08);
           border: 1px solid rgba(255, 255, 255, 0.12);
@@ -305,33 +345,91 @@ export default function TrackCard({
           padding: 10px 12px;
           border-radius: 999px;
           cursor: pointer;
+          min-width: 44px;
+          min-height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
+
+        @media (max-width: 480px) {
+          .play {
+            padding: 8px 10px;
+            font-size: 14px;
+          }
+        }
+
         .titles {
           flex: 1;
           display: flex;
           flex-direction: column;
           gap: 6px;
+          min-width: 0;
         }
         .artist {
           font-size: 13px;
           opacity: 0.9;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
+
+        @media (max-width: 480px) {
+          .artist {
+            font-size: 11px;
+          }
+        }
+
         .title {
           font-size: 18px;
           font-weight: 700;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
+
+        @media (max-width: 480px) {
+          .title {
+            font-size: 14px;
+          }
+        }
+
         .meta-right {
           display: flex;
           gap: 12px;
           align-items: center;
+          flex-shrink: 0;
         }
+
+        @media (max-width: 480px) {
+          .meta-right {
+            gap: 8px;
+            font-size: 12px;
+          }
+        }
+
         .duration {
           font-size: 12px;
         }
+
+        @media (max-width: 480px) {
+          .duration {
+            font-size: 10px;
+          }
+        }
+
         .dl a {
           color: #fff;
           text-decoration: underline;
+          font-size: 12px;
         }
+
+        @media (max-width: 480px) {
+          .dl a {
+            font-size: 10px;
+          }
+        }
+
         .wave-row {
           padding: 0px 12px 0px;
           background: linear-gradient(
@@ -340,10 +438,27 @@ export default function TrackCard({
             rgba(0, 0, 0, 0.08)
           );
           z-index: 2;
+          min-height: 44px;
+          display: flex;
+          align-items: center;
         }
+
+        @media (max-width: 480px) {
+          .wave-row {
+            padding: 0px 8px 0px;
+            min-height: 36px;
+          }
+        }
+
         .wave-canvas {
           width: 100%;
           height: 44px;
+        }
+
+        @media (max-width: 480px) {
+          .wave-canvas {
+            height: 36px;
+          }
         }
       `}</style>
     </div>

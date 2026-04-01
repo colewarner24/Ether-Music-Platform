@@ -16,6 +16,22 @@
   border: 1px solid #1a74ff;
 }
 
+@media (max-width: 768px) {
+  .nav {
+    font-size: 14px;
+    gap: 3px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    font-size: 12px;
+    gap: 2px;
+    padding: 4px;
+  }
+}
+
 .navbutton {
   padding: 6px 12px;
   border: 1px solid #1a74ff;
@@ -23,6 +39,17 @@
   cursor: pointer;
   text-decoration: none;
   color: #005aff;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .navbutton {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
 }
 
 .navbutton:hover {
@@ -46,11 +73,27 @@
   flex-direction: column;
 }
 
+@media (max-width: 480px) {
+  .drop-content {
+    min-width: 140px;
+    font-size: 12px;
+  }
+}
+
 .drop-content a {
   display: block;
   padding: 6px 10px;
   text-decoration: none;
   color: #005aff;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .drop-content a {
+    padding: 4px 8px;
+  }
 }
 
 .drop-content a:hover {
@@ -61,3 +104,4 @@
 .drop:hover .drop-content {
   display: block;
 }
+

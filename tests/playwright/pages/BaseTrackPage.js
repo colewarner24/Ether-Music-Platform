@@ -27,6 +27,10 @@ export class BaseTrackPage extends BasePage {
 
     await expect(track).toBeVisible({ timeout: 10000 });
 
+    await track
+      .getByRole("button", { name: "Track actions" })
+      .waitFor({ state: "visible" });
+    await this.page.waitForTimeout(500);
     await track.getByRole("button", { name: "Track actions" }).click();
     await track.getByRole("button", { name: "Delete Track" }).click();
   }
