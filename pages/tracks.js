@@ -81,12 +81,16 @@ export default function TracksPage() {
   }
 
   return (
-    <div style={{ 
-      maxWidth: 1000, 
-      margin: "36px auto",
-      padding: "0 10px"
-    }}>
-      <h1 style={{ fontSize: "clamp(24px, 5vw, 32px)", margin: "0 0 16px 0" }}>Tracks</h1>
+    <div
+      style={{
+        maxWidth: 1000,
+        margin: "36px auto",
+        padding: "0 10px",
+      }}
+    >
+      <h1 style={{ fontSize: "clamp(24px, 5vw, 32px)", margin: "0 0 16px 0" }}>
+        Tracks
+      </h1>
       <p style={{ marginBottom: 16, fontSize: "clamp(12px, 2vw, 14px)" }}>
         <a href="/upload">Upload a new track →</a>
       </p>
@@ -107,12 +111,14 @@ export default function TracksPage() {
       )}
 
       {!hasMore && tracks.length > 0 && (
-        <p style={{ 
-          textAlign: "center", 
-          color: "#666", 
-          marginTop: "20px",
-          fontSize: "clamp(12px, 2vw, 14px)"
-        }}>
+        <p
+          style={{
+            textAlign: "center",
+            color: "#666",
+            marginTop: "20px",
+            fontSize: "clamp(12px, 2vw, 14px)",
+          }}
+        >
           No more tracks to load
         </p>
       )}

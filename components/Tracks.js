@@ -10,7 +10,7 @@ export default function Tracks({ tracks, onDelete, onEdit, editable = false }) {
         <TrackCard
           key={t.id}
           title={t.title || t.originalName}
-          artist={t.artist || "Unknown"}
+          artist={t.user?.artistName || "Unknown"}
           artwork={artworkUrl(t.imageKey)}
           localSrc={t.audioKey}
           srcKey={t.audioKey}

@@ -16,8 +16,13 @@ export default async function handler(req, res) {
   let tracks;
   try {
     tracks = await prisma.track.findMany({
-      where: { userId: userId.id },
+      where: { userId: userId },
       orderBy: { createdAt: "desc" },
+      include: {
+        user: {
+          select: { artistName: true },
+        },
+      },
     });
   } catch (err) {
     return res.status(500).json({ error: "Database error: " + err.message });

@@ -10,6 +10,11 @@ export default async function handler(req, res) {
       orderBy: { createdAt: "desc" },
       skip,
       take,
+      include: {
+        user: {
+          select: { artistName: true },
+        },
+      },
     }),
     prisma.track.count({
       where: { private: false },
