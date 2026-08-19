@@ -16,6 +16,13 @@ model User {
   tracks       Track[]
   createdAt    DateTime @default(now())
   isAdmin      Boolean  @default(false)
+
+  // Email verification & password reset
+  emailVerified               Boolean   @default(false)
+  verificationToken           String?
+  verificationTokenExpiry     DateTime?
+  resetToken                  String?
+  resetTokenExpiry            DateTime?
 }
 
 model Track {
