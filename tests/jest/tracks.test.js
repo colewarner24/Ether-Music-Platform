@@ -26,12 +26,14 @@ describe("GET /api/tracks (Pagination)", () => {
         title: "Track A",
         artistId: 1,
         createdAt: new Date("2025-09-26T17:53:38.299Z"),
+        user: { artistName: "Artist A" },
       },
       {
         id: 2,
         title: "Track B",
         artistId: 1,
         createdAt: new Date("2025-09-26T17:53:38.299Z"),
+        user: { artistName: "Artist B" },
       },
     ];
 
@@ -68,6 +70,11 @@ describe("GET /api/tracks (Pagination)", () => {
       orderBy: { createdAt: "desc" },
       skip: 0,
       take: 10,
+      include: {
+        user: {
+          select: { artistName: true },
+        },
+      },
     });
 
     expect(prisma.track.count).toHaveBeenCalledWith({
@@ -92,12 +99,24 @@ describe("GET /api/tracks (Pagination)", () => {
     expect(data.skip).toBe(0);
     expect(data.take).toBe(10);
     expect(data.hasMore).toBe(false);
+
+    // Verify Prisma was called with include parameter
+    expect(prisma.track.findMany).toHaveBeenCalledWith({
+      where: { private: false },
+      orderBy: { createdAt: "desc" },
+      skip: 0,
+      take: 10,
+      include: {
+        user: {
+          select: { artistName: true },
+        },
+      },
+    });
   });
 
   it("correctly determines hasMore flag", async () => {
-    prisma.track.findMany.mockResolvedValue(
-      Array(10).fill({ id: 1, title: "Track" })
-    );
+    const mockTrack = { id: 1, title: "Track", user: { artistName: "Artist" } };
+    prisma.track.findMany.mockResolvedValue(Array(10).fill(mockTrack));
 
     // Case 1: hasMore should be true (20 results, skip 0, take 10)
     prisma.track.count.mockResolvedValue(20);
@@ -112,7 +131,23 @@ describe("GET /api/tracks (Pagination)", () => {
     let data = JSON.parse(res._getData());
     expect(data.hasMore).toBe(true); // 0 + 10 < 20
 
+    // Verify Prisma was called with include parameter
+    expect(prisma.track.findMany).toHaveBeenCalledWith({
+      where: { private: false },
+      orderBy: { createdAt: "desc" },
+      skip: 0,
+      take: 10,
+      include: {
+        user: {
+          select: { artistName: true },
+        },
+      },
+    });
+
+    jest.clearAllMocks();
+
     // Case 2: hasMore should be false (10 results, skip 0, take 10)
+    prisma.track.findMany.mockResolvedValue(Array(10).fill(mockTrack));
     prisma.track.count.mockResolvedValue(10);
 
     const { req: req2, res: res2 } = createMocks({
@@ -124,5 +159,18 @@ describe("GET /api/tracks (Pagination)", () => {
 
     data = JSON.parse(res2._getData());
     expect(data.hasMore).toBe(false); // 0 + 10 < 10 is false
+
+    // Verify Prisma was called with include parameter
+    expect(prisma.track.findMany).toHaveBeenCalledWith({
+      where: { private: false },
+      orderBy: { createdAt: "desc" },
+      skip: 0,
+      take: 10,
+      include: {
+        user: {
+          select: { artistName: true },
+        },
+      },
+    });
   });
 });

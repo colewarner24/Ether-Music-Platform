@@ -1,56 +1,66 @@
-import prisma from "@/lib/prisma"
-import bcrypt from "bcrypt"
-import crypto from "crypto"
-import { sendVerificationEmail } from "@/lib/email"
+import prisma from "@/lib/prisma";
+import bcrypt from "bcrypt";
+import crypto from "crypto";
+import { sendVerificationEmail } from "@/lib/email";
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end()
+  if (req.method !== "POST") return res.status(405).end();
 
   try {
-    const { email, password, artistName } = req.body
+    const { email, password, artistName } = req.body;
 
     if (!email || !password || !artistName) {
-      return res.status(400).json({ error: "Missing required fields" })
+      return res.status(400).json({ error: "Missing required fields" });
     }
 
     if (password.length < 8) {
-      return res.status(400).json({ error: "Password must be at least 8 characters" })
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 8 characters" });
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } })
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ error: "Email already in use" })
+      return res.status(400).json({ error: "Email already in use" });
     }
 
-    const existingArtist = await prisma.user.findUnique({ where: { artistName } })
+    const existingArtist = await prisma.user.findUnique({
+      where: { artistName },
+    });
     if (existingArtist) {
-      return res.status(400).json({ error: "Artist name already taken" })
+      return res.status(400).json({ error: "Artist name already taken" });
     }
 
-    const passwordHash = await bcrypt.hash(password, 10)
-    const verificationToken = crypto.randomBytes(32).toString("hex")
-    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000)
+    const passwordHash = await bcrypt.hash(password, 10);
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    const skipVerification = process.env.SKIP_EMAIL_VERIFICATION === "true";
 
     const user = await prisma.user.create({
       data: {
         email,
         passwordHash,
         artistName,
-        emailVerified: false,
+        emailVerified: skipVerification,
         verificationToken,
         verificationTokenExpiry,
       },
-    })
+    });
 
-    const baseUrl = process.env.NEXTAUTH_URL || `http://${req.headers.host}`
-    await sendVerificationEmail(email, verificationToken, baseUrl)
+    if (!skipVerification) {
+      const baseUrl = process.env.NEXTAUTH_URL || `http://${req.headers.host}`;
+      await sendVerificationEmail(email, verificationToken, baseUrl);
+    }
+
+    const baseUrl = process.env.NEXTAUTH_URL || `http://${req.headers.host}`;
+    await sendVerificationEmail(email, verificationToken, baseUrl);
 
     res.status(201).json({
       message: "User created. Check your email to verify your account.",
       user: { id: user.id, email: user.email, artistName: user.artistName },
-    })
+    });
   } catch (err) {
-    console.error("Register error:", err)
-    res.status(500).json({ error: err.message })
+    console.error("Register error:", err);
+    res.status(500).json({ error: err.message });
   }
 }

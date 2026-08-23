@@ -44,6 +44,12 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Run Prisma Migrations
+        run: npx prisma migrate deploy
+
+      - name: Run Jest Tests
+        run: npm test
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
@@ -56,7 +62,7 @@ jobs:
         run: npx next build
 
       - name: Start app
-        run: npm start &
+        run: SKIP_EMAIL_VERIFICATION=true npm start &
 
       - name: Wait for app to be ready
         run: npx wait-on http://localhost:3000 --timeout 60000
