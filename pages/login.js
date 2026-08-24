@@ -38,13 +38,13 @@ export default function LoginPage() {
 
       <form onSubmit={handleLogin}>
         <div style={{ marginBottom: 12 }}>
-          <label style={{ display: 'block', fontSize: 12, marginBottom: 6 }}>Email</label>
-          <input type="email" placeholder="you@domain.com" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }} />
+          <label htmlFor="login-email" style={{ display: 'block', fontSize: 12, marginBottom: 6 }}>Email</label>
+          <input id="login-email" type="email" placeholder="you@domain.com" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }} />
         </div>
 
         <div style={{ marginBottom: 12 }}>
-          <label style={{ display: 'block', fontSize: 12, marginBottom: 6 }}>Password</label>
-          <input type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }} />
+          <label htmlFor="login-password" style={{ display: 'block', fontSize: 12, marginBottom: 6 }}>Password</label>
+          <input id="login-password" type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }} />
         </div>
 
         {error && <div style={{ color: 'crimson', marginBottom: 12 }}>{error}</div>}

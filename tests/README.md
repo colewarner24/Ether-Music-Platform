@@ -7,7 +7,9 @@ End-to-end tests are written with [Playwright](https://playwright.dev) and cover
 - Profile page visibility
 - Audio file uploads to Cloudflare R2
 
-Tests run against a local build of the app connected to the Neon PostgreSQL database.
+Tests run against a local build of the app at `http://localhost:3000`, connected to
+the configured Neon PostgreSQL database. Set `BASE_URL` only when intentionally
+running the suite against a different server.
 
 ### Structure
 
@@ -35,3 +37,8 @@ On every push to `main`, and on pull requests to `main`, the pipeline:
 2. Builds the Next.js application
 3. Runs Playwright end-to-end tests against a local server
 4. Deploys to Vercel (only on successful pushes to `main`)
+
+The GitHub Actions workflow explicitly sets `BASE_URL` to the local server,
+verifies that the login page is served before starting Playwright, and uploads
+the Playwright report, traces, test results, and server logs when the job
+finishes.

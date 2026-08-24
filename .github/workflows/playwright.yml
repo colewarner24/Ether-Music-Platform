@@ -13,7 +13,8 @@ jobs:
       TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
       TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
       TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
-      BASE_URL: ${{ secrets.BASE_URL }}
+      # Playwright runs against the server started in this job, not the deployed app.
+      BASE_URL: http://localhost:3000
       CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
       CLOUDFLARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_R2_ACCOUNT_ID }}
       CLOUDFLARE_R2_AUDIO_BUCKET: ${{ secrets.CLOUDFLARE_R2_AUDIO_BUCKET }}
@@ -62,10 +63,17 @@ jobs:
         run: npx next build
 
       - name: Start app
-        run: SKIP_EMAIL_VERIFICATION=true npm start &
+        run: |
+          SKIP_EMAIL_VERIFICATION=true npm start > next-start.log 2>&1 &
+          echo $! > next-start.pid
 
       - name: Wait for app to be ready
         run: npx wait-on http://localhost:3000 --timeout 60000
+
+      - name: Verify login page
+        run: |
+          curl --fail --silent --show-error http://localhost:3000/login > login-page.html
+          grep -q "Welcome back" login-page.html
 
       - name: Create test media files
         run: |
@@ -74,6 +82,18 @@ jobs:
 
       - name: Run Playwright Tests
         run: npx playwright test
+
+      - name: Upload Playwright diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-diagnostics
+          path: |
+            playwright-report/
+            test-results/
+            next-start.log
+            login-page.html
+          if-no-files-found: ignore
 
   deploy:
     runs-on: ubuntu-latest

@@ -52,9 +52,6 @@ export default async function handler(req, res) {
       await sendVerificationEmail(email, verificationToken, baseUrl);
     }
 
-    const baseUrl = process.env.NEXTAUTH_URL || `http://${req.headers.host}`;
-    await sendVerificationEmail(email, verificationToken, baseUrl);
-
     res.status(201).json({
       message: "User created. Check your email to verify your account.",
       user: { id: user.id, email: user.email, artistName: user.artistName },

@@ -7,15 +7,13 @@ class LoginPage extends BasePage {
   }
 
   async goto() {
-    await this.page.goto("http://localhost:3000/login");
+    await this.page.goto("/login", { waitUntil: "domcontentloaded" });
   }
 
   async Login(email, password, username) {
-    await this.page.getByRole("textbox", { name: "Email" }).click();
-    await this.page.getByRole("textbox", { name: "Email" }).fill(email);
-    await this.page.getByRole("textbox", { name: "Password" }).click();
-    await this.page.getByRole("textbox", { name: "Password" }).fill(password);
-    await this.page.getByRole("button", { name: "Log In" }).click();
+    await this.page.getByLabel("Email").fill(email);
+    await this.page.getByLabel("Password").fill(password);
+    await this.page.getByRole("button", { name: /Sign in/i }).click();
     return new ProfilePage(this.page, username);
   }
 }
