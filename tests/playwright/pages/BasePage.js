@@ -1,3 +1,5 @@
+const pagesWithDialogHandler = new WeakSet();
+
 export class BasePage {
   constructor(page) {
     this.page = page;
@@ -6,9 +8,12 @@ export class BasePage {
       console.error("Page error:", err.message);
     });
 
-    this.page.on("dialog", (dialog) => {
-      console.log("Alert shown:", dialog.message());
-      dialog.dismiss();
-    });
+    if (!pagesWithDialogHandler.has(page)) {
+      pagesWithDialogHandler.add(page);
+      this.page.on("dialog", async (dialog) => {
+        console.log("Alert shown:", dialog.message());
+        await dialog.dismiss();
+      });
+    }
   }
 }
