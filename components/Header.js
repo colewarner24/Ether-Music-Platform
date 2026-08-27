@@ -41,13 +41,13 @@ export default function Header() {
         ) : (
           <div className="auth-links">
             <Link
-              href="/signup"
+              href="/auth/signup"
               className="auth-link"
             >
               Sign Up
             </Link>
             <Link
-              href="/login"
+              href="/auth/login"
               className="auth-link"
             >
               Login

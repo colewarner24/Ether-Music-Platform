@@ -11,7 +11,7 @@ jest.mock("../../lib/prisma", () => ({
   },
 }));
 
-import handler from "@/pages/api/tracks";
+import handler from "@/pages/api/tracks/index";
 import prisma from "@/lib/prisma";
 
 describe("GET /api/tracks (Pagination)", () => {

@@ -16,7 +16,7 @@ export default function UploadPage() {
     async function checkAuth() {
       const token = localStorage.getItem("token");
       if (!token) {
-        router.push("/login");
+        router.push("/auth/login");
         return;
       }
 
@@ -25,7 +25,7 @@ export default function UploadPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!r.ok) router.push("/login");
+      if (!r.ok) router.push("/auth/login");
     }
 
     setLoading(true);

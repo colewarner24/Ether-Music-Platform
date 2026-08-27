@@ -18,7 +18,7 @@ export default function AdminDashboard() {
       const token = localStorage.getItem('token');
       
       if (!token) {
-        router.push('/login');
+        router.push('/auth/login');
         return;
       }
 
@@ -36,10 +36,10 @@ export default function AdminDashboard() {
             router.push('/');
           }
         } else {
-          router.push('/login');
+          router.push('/auth/login');
         }
       } catch (err) {
-        router.push('/login');
+        router.push('/auth/login');
       }
     };
 

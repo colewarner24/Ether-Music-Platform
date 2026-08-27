@@ -26,7 +26,7 @@ export default function ResetPasswordFormPage() {
     if (res.ok) {
       setSuccess(true)
       setTimeout(() => {
-        router.push("/login")
+        router.push("/auth/login")
       }, 2000)
     } else {
       setError(data.error || "Failed to reset password")

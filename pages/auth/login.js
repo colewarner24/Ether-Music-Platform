@@ -53,8 +53,8 @@ export default function LoginPage() {
       </form>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12 }}>
-        <a href="/signup">Create account</a>
-        <a href="/reset-password">Forgot password?</a>
+        <a href="/auth/signup">Create account</a>
+        <a href="/auth/reset-password">Forgot password?</a>
       </div>
     </div>
   )

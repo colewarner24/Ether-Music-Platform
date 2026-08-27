@@ -7,7 +7,7 @@ class LoginPage extends BasePage {
   }
 
   async goto() {
-    await this.page.goto("/login", { waitUntil: "domcontentloaded" });
+    await this.page.goto("/auth/login", { waitUntil: "domcontentloaded" });
   }
 
   async Login(email, password, username) {

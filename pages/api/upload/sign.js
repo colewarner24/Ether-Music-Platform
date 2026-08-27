@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { r2 } from "@/lib/r2";
-import { decodeToken } from "./../utils";
+import { decodeToken } from "@/lib/api-utils";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).end();

@@ -53,7 +53,7 @@ export default function ResetPasswordPage() {
       </form>
 
       <div style={{ marginTop: 12 }}>
-        <p><a href="/login">Back to login</a></p>
+        <p><a href="/auth/login">Back to login</a></p>
       </div>
     </div>
   )

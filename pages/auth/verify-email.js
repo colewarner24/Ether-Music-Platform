@@ -25,7 +25,7 @@ export default function VerifyEmailPage() {
     if (res.ok) {
       setSuccess(true)
       setTimeout(() => {
-        router.push("/login")
+        router.push("/auth/login")
       }, 2000)
     } else {
       setError(data.error || "Verification failed")

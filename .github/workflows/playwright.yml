@@ -72,7 +72,7 @@ jobs:
 
       - name: Verify login page
         run: |
-          curl --fail --silent --show-error http://localhost:3000/login > login-page.html
+          curl --fail --silent --show-error http://localhost:3000/auth/login > login-page.html
           grep -q "Welcome back" login-page.html
 
       - name: Create test media files

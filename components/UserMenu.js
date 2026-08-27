@@ -67,10 +67,10 @@ export default function UserMenu() {
         </div>
       ) : (
         <div className={styles.authLinks}>
-          <Link href="/signup" className={styles.authLink}>
+          <Link href="/auth/signup" className={styles.authLink}>
             Sign Up
           </Link>
-          <Link href="/login" className={styles.authLink}>
+          <Link href="/auth/login" className={styles.authLink}>
             Login
           </Link>
         </div>

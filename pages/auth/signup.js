@@ -27,7 +27,7 @@ export default function SignupPage() {
     if (res.ok) {
       setSuccess(true)
       setTimeout(() => {
-        router.push("/login")
+        router.push("/auth/login")
       }, 2000)
     } else {
       setError(data.error || "Signup failed")
@@ -70,7 +70,7 @@ export default function SignupPage() {
       </form>
 
       <div style={{ marginTop: 12 }}>
-        <p>Already have an account? <a href="/login">Log in</a></p>
+        <p>Already have an account? <a href="/auth/login">Log in</a></p>
       </div>
     </div>
   )

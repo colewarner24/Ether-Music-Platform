@@ -1,4 +1,4 @@
-import handler from "@/pages/api/audio-url";
+import handler from "@/pages/api/audio/url";
 
 describe("audio-url", () => {
     test("that the application can generate a signed URL", async () => {

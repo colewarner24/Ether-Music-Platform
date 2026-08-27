@@ -37,7 +37,7 @@ export default function TrackCard({
 
       try {
         const res = await fetch(
-          `/api/audio-url?key=${encodeURIComponent(srcKey)}`
+          `/api/audio/url?key=${encodeURIComponent(srcKey)}`
         );
         const data = await res.json();
         setSrc(data.signedUrl);
