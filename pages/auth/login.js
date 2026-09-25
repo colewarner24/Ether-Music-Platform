@@ -32,27 +32,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ maxWidth: 420, margin: '40px auto', padding: 24, border: '1px solid #e6e6e6', borderRadius: 8 }}>
-      <h1 style={{ marginBottom: 8 }}>Welcome back</h1>
-      <p style={{ marginTop: 0, color: '#666' }}>Log in to access your dashboard.</p>
+    <div className="ether-panel mx-auto my-10 max-w-[420px] p-6 text-left">
+      <h1 className="mb-2 text-2xl font-bold">Welcome back</h1>
+      <p className="mt-0 text-slate-300">Log in to access your dashboard.</p>
 
       <form onSubmit={handleLogin}>
-        <div style={{ marginBottom: 12 }}>
-          <label htmlFor="login-email" style={{ display: 'block', fontSize: 12, marginBottom: 6 }}>Email</label>
-          <input id="login-email" type="email" placeholder="you@domain.com" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }} />
+        <div className="mb-3">
+          <label htmlFor="login-email" className="mb-1.5 block text-xs">Email</label>
+          <input id="login-email" type="email" placeholder="you@domain.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="ether-field" />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
-          <label htmlFor="login-password" style={{ display: 'block', fontSize: 12, marginBottom: 6 }}>Password</label>
-          <input id="login-password" type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }} />
+        <div className="mb-3">
+          <label htmlFor="login-password" className="mb-1.5 block text-xs">Password</label>
+          <input id="login-password" type="password" placeholder="Your password" value={password} onChange={(e) => setPassword(e.target.value)} required className="ether-field" />
         </div>
 
-        {error && <div style={{ color: 'crimson', marginBottom: 12 }}>{error}</div>}
+        {error && <div className="mb-3 text-red-400" role="alert">{error}</div>}
 
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: 10, background: '#111827', color: 'white', borderRadius: 6, border: 'none' }}>{loading ? 'Signing in...' : 'Sign in'}</button>
+        <button type="submit" disabled={loading} className="ether-button w-full">{loading ? 'Signing in...' : 'Sign in'}</button>
       </form>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12 }}>
+      <div className="mt-3 flex justify-between gap-3 text-sm">
         <a href="/auth/signup">Create account</a>
         <a href="/auth/reset-password">Forgot password?</a>
       </div>

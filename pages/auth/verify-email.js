@@ -34,7 +34,7 @@ export default function VerifyEmailPage() {
 
   if (!token) {
     return (
-      <div style={{ maxWidth: 420, margin: '40px auto', padding: 24, border: '1px solid #e6e6e6', borderRadius: 8 }}>
+      <div className="ether-panel mx-auto my-10 max-w-[420px] p-6 text-left">
         <p>Loading verification...</p>
       </div>
     )
@@ -42,7 +42,7 @@ export default function VerifyEmailPage() {
 
   if (success) {
     return (
-      <div style={{ maxWidth: 420, margin: '40px auto', padding: 24, border: '1px solid #e6e6e6', borderRadius: 8 }}>
+      <div className="ether-panel mx-auto my-10 max-w-[420px] p-6 text-left">
         <h1>Email verified!</h1>
         <p>Your email has been verified. Redirecting to login...</p>
       </div>
@@ -50,13 +50,13 @@ export default function VerifyEmailPage() {
   }
 
   return (
-    <div style={{ maxWidth: 420, margin: '40px auto', padding: 24, border: '1px solid #e6e6e6', borderRadius: 8 }}>
-      <h1 style={{ marginBottom: 8 }}>Verify your email</h1>
-      <p style={{ marginTop: 0, color: '#666' }}>Click the button below to verify your email address.</p>
+    <div className="ether-panel mx-auto my-10 max-w-[420px] p-6 text-left">
+      <h1 className="mb-2 text-2xl font-bold">Verify your email</h1>
+      <p className="mt-0 text-slate-300">Click the button below to verify your email address.</p>
 
-      {error && <div style={{ color: 'crimson', marginBottom: 12 }}>{error}</div>}
+      {error && <div className="mb-3 text-red-400" role="alert">{error}</div>}
 
-      <button onClick={handleVerify} disabled={loading} style={{ width: '100%', padding: 10, background: '#111827', color: 'white', borderRadius: 6, border: 'none' }}>
+      <button onClick={handleVerify} disabled={loading} className="ether-button w-full">
         {loading ? 'Verifying...' : 'Verify email'}
       </button>
     </div>

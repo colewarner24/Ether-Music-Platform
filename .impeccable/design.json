@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-24T21:20:32Z",
+  "title": "Design System: Ether Music Platform",
+  "extensions": {
+    "colorMeta": {
+      "black": {
+        "role": "neutral",
+        "displayName": "Black",
+        "canonical": "#090909",
+        "tonalRamp": ["#090909", "#101010", "#141414", "#1b1b1b", "#262626", "#383834", "#696963", "#deded8"]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "canonical": "#deded8",
+        "tonalRamp": ["#1b1b1a", "#343432", "#555550", "#888883", "#deded8", "#e7e7e1", "#f0f0e9", "#f9f9f3"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#f4f4f0",
+        "tonalRamp": ["#1e1e1c", "#383835", "#5e5e59", "#8d8d86", "#c6c6bf", "#deded8", "#ebebe5", "#f4f4f0"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#a4a49d",
+        "tonalRamp": ["#22221f", "#3c3c38", "#5e5e58", "#7f7f78", "#a4a49d", "#c0c0b8", "#d8d8d0", "#f0f0e8"]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Signal Red",
+        "canonical": "#ff4d3d",
+        "tonalRamp": ["#4c100b", "#7d1912", "#b5281e", "#ff4d3d", "#ff7367", "#ff9a91", "#ffc1bb", "#ffe9e6"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Catalog Heading",
+        "purpose": "Compact, bold public page titles."
+      },
+      "body": {
+        "displayName": "Utility Sans",
+        "purpose": "Readable page copy, track titles, and application UI."
+      },
+      "label": {
+        "displayName": "Index Mono",
+        "purpose": "Navigation, compact metadata, and old-web catalog texture."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shell-ambient",
+        "value": "0 18px 40px rgb(0 0 0 / 45%)",
+        "purpose": "Single ambient shadow around the application frame."
+      },
+      {
+        "name": "track-lift",
+        "value": "0 10px 20px rgb(0 0 0 / 38%)",
+        "purpose": "Separates stacked artwork-backed track rows."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-transition",
+        "value": "150ms ease",
+        "purpose": "Small control state changes only; no decorative entrance animation."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile-drawer",
+        "value": "768px",
+        "purpose": "Switch the sidebar into a drawer."
+      },
+      {
+        "name": "compact",
+        "value": "480px",
+        "purpose": "Tighten shell and track card spacing."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Catalog Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Rectangular paper control with a restrained red hover state.",
+      "html": "<button class=\"ds-catalog-button\">Upload</button>",
+      "css": ".ds-catalog-button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #deded8; border-radius: 0; background: #deded8; color: #090909; padding: 8px 14px; font: 700 16px/1.5 'Trebuchet MS', Arial, sans-serif; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease, transform 150ms ease; } .ds-catalog-button:hover { border-color: #ff4d3d; background: #ff4d3d; } .ds-catalog-button:focus-visible { outline: 2px solid #ff4d3d; outline-offset: 3px; } .ds-catalog-button:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Catalog Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Square near-black input with a visible red focus state.",
+      "html": "<input class=\"ds-catalog-field\" placeholder=\"Track title\" />",
+      "css": ".ds-catalog-field { width: 100%; min-height: 44px; border: 1px solid #4b4b47; border-radius: 0; background: #101010; color: #f4f4f0; padding: 8px 10px; font: 400 16px/1.5 'Trebuchet MS', Arial, sans-serif; } .ds-catalog-field::placeholder { color: #a4a49d; } .ds-catalog-field:focus { border-color: #ff4d3d; box-shadow: 0 0 0 1px #ff4d3d; outline: none; }"
+    },
+    {
+      "name": "Index Navigation",
+      "kind": "nav",
+      "refersTo": "button-primary",
+      "description": "Rectangular mono-label navigation row with a red active marker.",
+      "html": "<a class=\"ds-index-nav\" href=\"#\">Tracks</a>",
+      "css": ".ds-index-nav { min-height: 44px; display: flex; align-items: center; border: 1px solid transparent; border-radius: 0; color: #deded8; padding: 0 12px; font: 400 .8rem/1.4 'Courier New', monospace; letter-spacing: .04em; text-decoration: none; text-transform: uppercase; } .ds-index-nav:hover, .ds-index-nav:focus-visible { border-color: #deded8; background: #1a1a1a; color: #f4f4f0; } .ds-index-nav[aria-current='page'] { border-color: #deded8; background: #deded8; box-shadow: inset 4px 0 0 #ff4d3d; color: #090909; }"
+    },
+    {
+      "name": "Artwork Track Row",
+      "kind": "custom",
+      "refersTo": "track-card",
+      "description": "Stacked full-bleed artwork row with square playback control and compact metadata.",
+      "html": "<article class=\"ds-track-row\"><div class=\"ds-track-row__meta\"><button class=\"ds-track-row__play\" aria-label=\"Play track\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"m4 2 9 6-9 6V2z\"></path></svg></button><div><div class=\"ds-track-row__artist\">artist</div><strong>track title</strong></div></div><div class=\"ds-track-row__wave\"></div></article>",
+      "css": ".ds-track-row { position: relative; overflow: hidden; border: 1px solid #deded8; border-radius: 0; background: #262626; color: #f4f4f0; box-shadow: 0 10px 20px rgb(0 0 0 / 38%); } .ds-track-row__meta { display: flex; align-items: center; gap: 12px; padding: 16px; } .ds-track-row__play { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid #deded8; border-radius: 0; background: #deded8; color: #090909; } .ds-track-row__play:hover { border-color: #ff4d3d; background: #ff4d3d; } .ds-track-row__play svg { width: 16px; height: 16px; fill: currentColor; } .ds-track-row__artist { color: #deded8; font: .8rem/1.4 'Courier New', monospace; text-transform: uppercase; } .ds-track-row__wave { min-height: 44px; border-top: 1px solid rgb(244 244 240 / 28%); background: rgb(0 0 0 / 28%); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Independent Catalog",
+    "overview": "Ether is now a monochrome, artwork-led music catalog with the texture of early web music communities and the clarity of a modern player. The interface should feel assembled from printed labels, ruled lists, image thumbnails, and practical controls rather than from glossy SaaS panels. Black is the field, off-white is the voice, and one restrained signal red marks action or playback state.\n\nThe tracks page remains a vertical listening feed: one track follows another, artwork is visible inside every track surface, and metadata stays close to the play control. The visual identity is intentionally boxy. Corners, gradients, blue chrome, and decorative surface gloss are not the source of personality; alignment, artwork, typography, and decisive borders are.",
+    "keyCharacteristics": [
+      "Mostly black, white, gray, and one restrained red signal",
+      "Stacked track listing instead of a dashboard card grid",
+      "Artwork is the strongest visual element inside each track",
+      "Square controls and ruled borders",
+      "Compact monospace labels paired with a friendly utility sans",
+      "Minimal motion; state is communicated by color, contrast, and position"
+    ],
+    "rules": [
+      {
+        "name": "The Artwork-First Rule",
+        "body": "Keep the interface mostly monochrome so the track's artwork, not the chrome, supplies the emotional color.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signal-Ration Rule",
+        "body": "Signal Red is a state marker, not a theme color. Use it where a listener needs to notice action or focus, not as a decorative fill across the page.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Voice Rule",
+        "body": "Use sans for reading and mono for indexing. Do not make every paragraph look like code.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Chrome Rule",
+        "body": "Borders, alignment, and contrast carry the interface. Shadows should clarify grouping, not make controls look inflated.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the tracks feed stacked, with one track visually following another.",
+      "Do let artwork carry most of the color and emotional expression.",
+      "Do use square controls, 1px rules, compact labels, and clear alignment.",
+      "Do use Signal Red sparingly for focus, playback, and important state.",
+      "Do keep real artwork visible behind readable track metadata.",
+      "Do use inline SVG icons for playback and navigation controls.",
+      "Do preserve 44px minimum interaction targets and reduced-motion behavior."
+    ],
+    "donts": [
+      "Don't use blue as a default product accent.",
+      "Don't use gradient-filled sidebar buttons or pill-shaped navigation.",
+      "Don't use glossy, inflated, or fake-looking play controls.",
+      "Don't turn the tracks page into a grid of equal dashboard cards.",
+      "Don't add excessive rounded containers or decorative animations.",
+      "Don't make the interface resemble generic purple-gradient AI software.",
+      "Don't let the monochrome shell compete with track artwork."
+    ]
+  }
+}

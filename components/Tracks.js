@@ -5,7 +5,7 @@ export default function Tracks({ tracks, onDelete, onEdit, editable = false }) {
   console.log("Rendering tracks:", tracks);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div className="flex flex-col gap-4">
       {tracks.map((t) => (
         <TrackCard
           key={t.id}
@@ -19,7 +19,11 @@ export default function Tracks({ tracks, onDelete, onEdit, editable = false }) {
           editable={editable}
         />
       ))}
-      {tracks.length === 0 && <div>No tracks yet.</div>}
+      {tracks.length === 0 && (
+        <div className="ether-feedback mx-auto max-w-xl py-8 text-center">
+          No tracks yet.
+        </div>
+      )}
     </div>
   );
 }

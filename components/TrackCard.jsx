@@ -201,30 +201,53 @@ export default function TrackCard({
   //  UI RENDER
   // ============================================================
   return (
-    <div className="sc-card">
+    <div className="mx-auto my-2 w-full max-w-[900px] font-[var(--ui-font)] max-md:max-w-[calc(100%-10px)] max-sm:my-1 max-sm:max-w-[calc(100%-8px)]">
       <div
-        className="artwork"
-        style={{ backgroundImage: artwork ? `url(${artwork})` : "none" }}
+        className="ether-track-card relative overflow-hidden bg-[#2a2a27]"
       >
-        <div className="overlay" />
+        {artwork && (
+          <img
+            src={artwork}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/45" />
 
-        <div className="header">
-          <div className="play-wrap">
-            <button className="play" onClick={toggle}>
-              {playing ? "▮▮" : "▶"}
+        <div className="relative z-2 flex flex-wrap items-center gap-3 p-4 text-white max-md:gap-2.5 max-md:p-3 max-sm:gap-2 max-sm:p-2 max-sm:text-xs">
+          <div className="flex w-14 shrink-0 justify-center max-sm:w-11">
+            <button
+              className="ether-button flex min-h-11 min-w-11 cursor-pointer items-center justify-center px-3 py-2.5 max-sm:px-2.5 max-sm:py-2"
+              onClick={toggle}
+              aria-label={playing ? "Pause track" : "Play track"}
+            >
+              {playing ? (
+                <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M3 2h3v12H3zM10 2h3v12h-3z" />
+                </svg>
+              ) : (
+                <svg aria-hidden="true" className="ml-0.5 h-4 w-4" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="m4 2 9 6-9 6V2z" />
+                </svg>
+              )}
             </button>
           </div>
 
-          <div className="titles">
-            <div className="artist">{artist || "unknown"}</div>
-            <div className="title">{title || "untitled"}</div>
+          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+            <div className="truncate text-[13px] opacity-90 max-sm:text-[11px]">
+              {artist || "unknown"}
+            </div>
+            <div className="truncate text-lg font-bold max-sm:text-sm">
+              {title || "untitled"}
+            </div>
           </div>
 
-          <div className="meta-right">
-            <div className="duration">{fmt(duration)}</div>
+          <div className="flex shrink-0 items-center gap-3 max-sm:gap-2 max-sm:text-xs">
+            <div className="text-xs max-sm:text-[10px]">{fmt(duration)}</div>
             {src && (
-              <div className="dl">
-                <a href={src} download>
+              <div>
+                <a className="text-xs text-white underline hover:text-ether-signal max-sm:text-[10px]" href={src} download>
                   download
                 </a>
               </div>
@@ -232,24 +255,30 @@ export default function TrackCard({
           </div>
         </div>
 
-        <div className="wave-row">
-          <canvas ref={canvasRef} className="wave-canvas" height="44" />
+        <div className="relative z-2 flex min-h-11 items-center bg-black/20 px-3 max-sm:min-h-9 max-sm:px-2">
+          <canvas ref={canvasRef} className="h-11 w-full max-sm:h-9" height="44" />
         </div>
 
         {editable && (
-          <div className="actions" ref={menuRef}>
+          <div className="relative z-2 flex justify-end" ref={menuRef}>
             <button
-              className="more"
+              className="flex min-h-11 min-w-11 cursor-pointer items-center justify-center border-0 bg-black/45 px-3 py-2 text-xl text-white/80 hover:bg-black/75 hover:text-white"
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Track actions"
             >
-              ⋯
+              <svg aria-hidden="true" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <circle cx="4" cy="10" r="1.5" />
+                <circle cx="10" cy="10" r="1.5" />
+                <circle cx="16" cy="10" r="1.5" />
+              </svg>
             </button>
 
             {menuOpen && (
-              <div className="menu">
-                <button onClick={onEdit}>Edit Track</button>
-                <button className="danger" onClick={onDelete}>
+              <div className="absolute bottom-9 right-0 z-50 min-w-40 overflow-hidden border border-white/60 bg-black shadow-xl max-sm:min-w-36 max-sm:text-xs">
+                <button className="flex min-h-11 w-full cursor-pointer items-center border-0 bg-transparent px-3 py-2.5 text-left text-[13px] text-white hover:bg-white/10 max-sm:px-2.5 max-sm:py-2 max-sm:text-xs" onClick={onEdit}>
+                  Edit Track
+                </button>
+                <button className="flex min-h-11 w-full cursor-pointer items-center border-0 bg-transparent px-3 py-2.5 text-left text-[13px] text-red-400 hover:bg-white/10 max-sm:px-2.5 max-sm:py-2 max-sm:text-xs" onClick={onDelete}>
                   Delete Track
                 </button>
               </div>
@@ -259,208 +288,6 @@ export default function TrackCard({
       </div>
 
       <audio ref={audioRef} src={src} preload="metadata" />
-
-      <style jsx>{`
-        .sc-card {
-          width: 100%;
-          max-width: 900px;
-          margin: 8px auto;
-          font-family: var(--ui-font, system-ui);
-        }
-
-        @media (max-width: 768px) {
-          .sc-card {
-            max-width: calc(100% - 10px);
-            margin: 6px auto;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .sc-card {
-            max-width: calc(100% - 8px);
-            margin: 4px auto;
-          }
-        }
-
-        .artwork {
-          position: relative;
-          background-color: #222;
-          background-size: cover;
-          background-position: center;
-          border: 3px solid rgba(255, 255, 255, 0.2);
-          overflow: hidden;
-        }
-        .overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.45),
-            rgba(0, 0, 0, 0.25)
-          );
-        }
-        .header {
-          display: flex;
-          gap: 12px;
-          padding: 16px;
-          color: #fff;
-          align-items: center;
-          position: relative;
-          z-index: 2;
-          flex-wrap: wrap;
-        }
-
-        @media (max-width: 768px) {
-          .header {
-            gap: 10px;
-            padding: 12px;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .header {
-            gap: 8px;
-            padding: 8px;
-            font-size: 12px;
-          }
-        }
-
-        .play-wrap {
-          width: 56px;
-          display: flex;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-
-        @media (max-width: 480px) {
-          .play-wrap {
-            width: 44px;
-          }
-        }
-
-        .play {
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          color: #fff;
-          padding: 10px 12px;
-          border-radius: 999px;
-          cursor: pointer;
-          min-width: 44px;
-          min-height: 44px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        @media (max-width: 480px) {
-          .play {
-            padding: 8px 10px;
-            font-size: 14px;
-          }
-        }
-
-        .titles {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-          min-width: 0;
-        }
-        .artist {
-          font-size: 13px;
-          opacity: 0.9;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        @media (max-width: 480px) {
-          .artist {
-            font-size: 11px;
-          }
-        }
-
-        .title {
-          font-size: 18px;
-          font-weight: 700;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        @media (max-width: 480px) {
-          .title {
-            font-size: 14px;
-          }
-        }
-
-        .meta-right {
-          display: flex;
-          gap: 12px;
-          align-items: center;
-          flex-shrink: 0;
-        }
-
-        @media (max-width: 480px) {
-          .meta-right {
-            gap: 8px;
-            font-size: 12px;
-          }
-        }
-
-        .duration {
-          font-size: 12px;
-        }
-
-        @media (max-width: 480px) {
-          .duration {
-            font-size: 10px;
-          }
-        }
-
-        .dl a {
-          color: #fff;
-          text-decoration: underline;
-          font-size: 12px;
-        }
-
-        @media (max-width: 480px) {
-          .dl a {
-            font-size: 10px;
-          }
-        }
-
-        .wave-row {
-          padding: 0px 12px 0px;
-          background: linear-gradient(
-            180deg,
-            rgba(0, 0, 0, 0.12),
-            rgba(0, 0, 0, 0.08)
-          );
-          z-index: 2;
-          min-height: 44px;
-          display: flex;
-          align-items: center;
-        }
-
-        @media (max-width: 480px) {
-          .wave-row {
-            padding: 0px 8px 0px;
-            min-height: 36px;
-          }
-        }
-
-        .wave-canvas {
-          width: 100%;
-          height: 44px;
-        }
-
-        @media (max-width: 480px) {
-          .wave-canvas {
-            height: 36px;
-          }
-        }
-      `}</style>
     </div>
   );
 }

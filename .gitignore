@@ -18,3 +18,5 @@ tests/playwright/.cache/
 tests/playwright/.auth/
 
 .vercel
+
+.github/skills
