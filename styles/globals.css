@@ -31,29 +31,30 @@ body {
 }
 
 #container {
-  width: 800px;
-  margin: 20px auto;
+  box-sizing: border-box;
+  width: calc(100% - 24px);
+  min-height: calc(100vh - 24px);
+  margin: 12px;
   background-color: black;
   border: 1px solid #1a74ff;
   border-radius: 7px;
-  padding: 10px;
   font-family: "Trubec";
 }
 
 @media (max-width: 768px) {
   #container {
-    width: calc(100% - 20px);
-    margin: 10px auto;
-    padding: 8px;
+    width: calc(100% - 16px);
+    min-height: calc(100vh - 16px);
+    margin: 8px;
     border-radius: 4px;
   }
 }
 
 @media (max-width: 480px) {
   #container {
-    width: calc(100% - 16px);
-    margin: 5px auto;
-    padding: 6px;
+    width: calc(100% - 10px);
+    min-height: calc(100vh - 10px);
+    margin: 5px;
     border-radius: 3px;
   }
 }
