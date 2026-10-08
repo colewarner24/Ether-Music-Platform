@@ -1,7 +1,14 @@
 export default function AboutPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 pb-10 pt-10 text-left leading-relaxed">
-      <h1 className="mb-5 text-3xl font-bold text-white">Welcome to Ether</h1>
+    <main
+      style={{
+        maxWidth: 720,
+        margin: "40px auto",
+        padding: "0 24px 40px",
+        lineHeight: 1.6,
+      }}
+    >
+      <h1>Welcome to Ether</h1>
 
       <p>
         I made this site as a way to store my exported songs from my DAW so
@@ -13,7 +20,13 @@ export default function AboutPage() {
 
       <p>The idea of Ether is that everyone can post:</p>
 
-      <div className="my-4 whitespace-pre-wrap [tab-size:4]">
+      <div
+        style={{
+          whiteSpace: "pre-wrap",
+          margin: "16px 0",
+          tabSize: 4,
+        }}
+      >
         {"Music\n    Sound recordings\nSpoken Words\n    Thoughts Aloud"}
       </div>
 

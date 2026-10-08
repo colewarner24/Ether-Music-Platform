@@ -1,3 +1,6 @@
+"use client";
+import styles from "@/styles/UserMenu.module.css";
+
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 
@@ -38,37 +41,36 @@ export default function UserMenu() {
   };
 
   return (
-    <div className="absolute right-2.5 top-2.5 z-20 inline-block" ref={menuRef}>
+    <div className={styles.userMenu} ref={menuRef}>
       {user ? (
         <div>
           <button
-            className="cursor-pointer rounded-full border-2 border-white/80 bg-white/45 p-0 shadow-md"
-            aria-label="Open user menu"
+            className={styles.avatarBtn}
             onClick={() => setMenuOpen((prev) => !prev)}
           >
             <img
               src={user.profilePhoto || "/default-avatar.png"}
               alt="Profile"
-              className="h-10 w-10 rounded-full object-cover"
+              className={styles.avatar}
             />
           </button>
           {menuOpen && (
-            <div className="ether-panel absolute right-0 top-full z-50 mt-1 min-w-36 overflow-hidden rounded-xl">
-              <Link href={`/user/${user.artistName}`} className="block min-h-11 w-full px-3 py-2.5 text-left text-white no-underline hover:bg-white/10">
+            <div className={styles.dropdown}>
+              <Link href={`/user/${user.artistName}`} className={styles.dropdownItem}>
                 Profile
               </Link>
-              <button onClick={handleSignOut} className="block min-h-11 w-full border-0 bg-transparent px-3 py-2.5 text-left text-white hover:bg-white/10">
+              <button onClick={handleSignOut} className={styles.dropdownItem}>
                 Sign out
               </button>
             </div>
           )}
         </div>
       ) : (
-        <div className="flex gap-2.5">
-          <Link href="/auth/signup" className="mt-2 text-sm font-medium text-white no-underline hover:text-ether-200">
+        <div className={styles.authLinks}>
+          <Link href="/auth/signup" className={styles.authLink}>
             Sign Up
           </Link>
-          <Link href="/auth/login" className="mt-2 text-sm font-medium text-white no-underline hover:text-ether-200">
+          <Link href="/auth/login" className={styles.authLink}>
             Login
           </Link>
         </div>

@@ -71,8 +71,8 @@ export default function TracksPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto my-9 max-w-5xl px-2.5 text-center">
-        <h1 className="text-3xl font-bold">Tracks</h1>
+      <div style={{ maxWidth: 1000, margin: "36px auto", textAlign: "center" }}>
+        <h1>Tracks</h1>
         <div>
           <Loading />
         </div>
@@ -81,23 +81,44 @@ export default function TracksPage() {
   }
 
   return (
-    <div className="mx-auto my-9 max-w-5xl px-2.5">
-      <h1 className="mb-4 text-[clamp(24px,5vw,32px)] font-bold">
+    <div
+      style={{
+        maxWidth: 1000,
+        margin: "36px auto",
+        padding: "0 10px",
+      }}
+    >
+      <h1 style={{ fontSize: "clamp(24px, 5vw, 32px)", margin: "0 0 16px 0" }}>
         Tracks
       </h1>
-      <p className="mb-4 text-[clamp(12px,2vw,14px)]">
+      <p style={{ marginBottom: 16, fontSize: "clamp(12px, 2vw, 14px)" }}>
         <a href="/upload">Upload a new track →</a>
       </p>
       <Tracks tracks={tracks} onDelete={deleteTrack} onEdit={updateTrack} />
 
       {hasMore && (
-        <div ref={observerTarget} className="mt-5 flex justify-center p-[clamp(12px,4vw,20px)]">
+        <div
+          ref={observerTarget}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "clamp(12px, 4vw, 20px)",
+            marginTop: "20px",
+          }}
+        >
           {isLoadingMore && <Loading />}
         </div>
       )}
 
       {!hasMore && tracks.length > 0 && (
-        <p className="mt-5 text-center text-[clamp(12px,2vw,14px)] text-slate-400">
+        <p
+          style={{
+            textAlign: "center",
+            color: "#666",
+            marginTop: "20px",
+            fontSize: "clamp(12px, 2vw, 14px)",
+          }}
+        >
           No more tracks to load
         </p>
       )}

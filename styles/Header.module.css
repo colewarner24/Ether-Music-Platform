@@ -1,0 +1,102 @@
+
+.header {
+  background: center / cover url("/images/headerchouchou.png");
+  background-position: top;
+  background-repeat: no-repeat;
+  height: auto;
+  align-content: center;
+  margin-bottom: 5px;
+  padding: 10px;
+  position: relative;
+  border: 1px solid #1a74ff;
+  border-radius: 7px 7px 0px 0px;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px black;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 8px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 6px;
+    font-size: 16px;
+  }
+}
+
+.icon-section {
+  position: absolute;
+  right: 0px;
+  top: 10px;
+}
+
+@media (max-width: 480px) {
+  .icon-section {
+    top: 5px;
+    right: 5px;
+  }
+}
+
+.profile-icon {
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.pageTitle {
+  position: absolute;
+  margin-left: 20px;
+  margin-top: 0px;
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .pageTitle {
+    font-size: 32px;
+    margin-left: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 24px;
+    margin-left: 10px;
+  }
+}
+
+.page-title:hover {
+  color: #3b82f6;
+}
+
+.pageDescription {
+  text-align: right;
+  margin-left: 20px;
+  margin-top: 90px;
+}
+
+@media (max-width: 768px) {
+  .pageDescription {
+    margin-top: 80px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageDescription {
+    margin-top: 70px;
+    font-size: 12px;
+    margin-left: 10px;
+  }
+}
+

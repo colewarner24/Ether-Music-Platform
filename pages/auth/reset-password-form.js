@@ -34,12 +34,12 @@ export default function ResetPasswordFormPage() {
   }
 
   if (!token) {
-    return <div className="mx-auto my-10 max-w-[420px]">Loading...</div>
+    return <div style={{ margin: '40px auto', maxWidth: 420 }}>Loading...</div>
   }
 
   if (success) {
     return (
-      <div className="ether-panel mx-auto my-10 max-w-[420px] p-6 text-left">
+      <div style={{ maxWidth: 420, margin: '40px auto', padding: 24, border: '1px solid #e6e6e6', borderRadius: 8 }}>
         <h1>Password reset</h1>
         <p>Your password has been reset. Redirecting to login...</p>
       </div>
@@ -47,19 +47,19 @@ export default function ResetPasswordFormPage() {
   }
 
   return (
-    <div className="ether-panel mx-auto my-10 max-w-[420px] p-6 text-left">
-      <h1 className="mb-2 text-2xl font-bold">Set new password</h1>
-      <p className="mt-0 text-slate-300">Enter your new password below.</p>
+    <div style={{ maxWidth: 420, margin: '40px auto', padding: 24, border: '1px solid #e6e6e6', borderRadius: 8 }}>
+      <h1 style={{ marginBottom: 8 }}>Set new password</h1>
+      <p style={{ marginTop: 0, color: '#666' }}>Enter your new password below.</p>
 
       <form onSubmit={handleReset}>
-        <div className="mb-3">
-          <label className="mb-1.5 block text-xs">New password</label>
-          <input type="password" placeholder="At least 8 characters" value={password} onChange={(e) => setPassword(e.target.value)} required className="ether-field" />
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ display: 'block', fontSize: 12, marginBottom: 6 }}>New password</label>
+          <input type="password" placeholder="At least 8 characters" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%', padding: 8, borderRadius: 4, border: '1px solid #ccc' }} />
         </div>
 
-        {error && <div className="mb-3 text-red-400" role="alert">{error}</div>}
+        {error && <div style={{ color: 'crimson', marginBottom: 12 }}>{error}</div>}
 
-        <button type="submit" disabled={loading} className="ether-button w-full">{loading ? 'Resetting...' : 'Reset password'}</button>
+        <button type="submit" disabled={loading} style={{ width: '100%', padding: 10, background: '#111827', color: 'white', borderRadius: 6, border: 'none' }}>{loading ? 'Resetting...' : 'Reset password'}</button>
       </form>
     </div>
   )

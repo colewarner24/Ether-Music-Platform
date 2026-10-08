@@ -1,6 +1,8 @@
+import styles from "@/styles/Footer.module.css";
+
 export default function Footer() {
   return (
-    <footer className="ether-footer mt-4 flex flex-wrap justify-center gap-1.5 border p-3 text-center text-xs">
+    <footer className={styles.footer}>
       <span>&copy; 2026 Ether Music Platform</span>
       <span aria-hidden="true">·</span>
       <span>v0.1.0</span>
